@@ -33,12 +33,13 @@
             <b-select
               placeholder="Select a role"
               rounded
+              v-model="role"
               size="is-large"
               expanded
             >
+              <option value="student">Student</option>
               <option value="admin">Admin</option>
-              <option value="tutors">Tutors</option>
-              <option value="students">Students</option>
+              <option value="tutor">Tutor</option>
             </b-select>
           </b-field>
           <b-button
@@ -63,9 +64,12 @@
 
 <script>
 export default {
-  name: "HelloWorld",
+  name: "LogIn",
   props: {
     msg: String,
+  },
+  data() {
+    return { password: "", role: "student", username: "" };
   },
 };
 </script>
