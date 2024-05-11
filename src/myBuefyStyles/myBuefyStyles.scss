@@ -1,0 +1,98 @@
+@import "~bulma/sass/utilities/_all";
+
+$primary: rgba(7, 32, 93, 1);
+$primary-dark: rgba(7, 32, 93, 1);
+$danger: rgba(255, 80, 90, 1);
+$danger-light: #ffe9eb;
+$success: rgba(48, 191, 98, 1);
+$info: #fff;
+
+$section-is-hovered: $primary;
+$input-focus-border-color: $primary;
+$input-focus-box-shadow-color: $primary;
+$checkbox-background-color: rgba(196, 196, 196, 0.1);
+$radio-border-color: $primary;
+$colors: mergeColorMaps(
+  (
+    "primary": (
+      $primary,
+      $primary-invert,
+      $primary-light,
+      $primary-dark,
+    ),
+    "link": (
+      $link,
+      $link-invert,
+      $link-light,
+      $link-dark,
+    ),
+    "info": (
+      $info,
+      $info-invert,
+      $info-light,
+      $info-dark,
+    ),
+    "danger": (
+      $danger,
+      $danger-invert,
+      $danger-light,
+      $danger-dark,
+    ),
+    "success": (
+      $success,
+      $success-invert,
+      $success-light,
+      $success-dark,
+    ),
+  ),
+  $custom-colors
+);
+@import "~bulma";
+@import "~buefy/src/scss/buefy";
+
+.field.has-addons {
+  justify-content: center;
+}
+
+.columns {
+  margin: 0 !important;
+}
+
+.column {
+  padding: 0 !important;
+}
+.input {
+  border-radius: 7px;
+  border: 1.5px solid var(--gray, #bac1d2);
+  background: var(--white, #fff);
+}
+.textarea {
+  border-radius: 7px;
+  border: 1.5px solid var(--gray, #bac1d2);
+  background: var(--white, #fff);
+}
+.select select {
+  border-radius: 7px;
+  border: 1.5px solid var(--gray, #bac1d2);
+  background: var(--white, #fff);
+}
+.is-large::placeholder {
+  color: rgba(33, 33, 33, 0.75) !important;
+  // font-size: 18px !important;
+  font-weight: 500;
+}
+.select.is-empty select {
+  color: rgba(33, 33, 33, 0.75) !important;
+  // font-size: 18px !important;
+  font-weight: 500;
+}
+.select:not(.is-multiple):not(.is-loading)::after {
+  border-color: rgba(7, 32, 93, 1);
+  right: 1.125em;
+
+  z-index: 4;
+}
+.modal-background {
+  background: rgba(7, 32, 93, 0.58);
+  backdrop-filter: blur(6px);
+}
