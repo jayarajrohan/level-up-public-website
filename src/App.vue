@@ -102,4 +102,7 @@ export default {
 .font-color-one {
   color: rgba(117, 117, 117, 1);
 }
+.error-massage {
+  font-size: 16px;
+}
 </style>

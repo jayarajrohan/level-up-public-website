@@ -1,59 +1,100 @@
 <template>
   <div class="mx-5 my-3">
     <p class="has-text-primary is-size-4">Create Student</p>
-    <div class="mt-4 mx-4">
-      <div class="columns">
-        <div class="column mr-4">
-          <label>User Name<span class="has-text-danger ml-1">*</span></label>
-          <b-field>
-            <b-input
-              type="text"
-              v-model="username"
-              placeholder="Enter user name"
-            />
-          </b-field>
-        </div>
-        <div class="column">
-          <label>Password<span class="has-text-danger ml-1">*</span></label>
-          <b-field>
-            <b-input
-              type="text"
-              v-model="password"
-              placeholder="Enter password"
-            />
-          </b-field>
-        </div>
-      </div>
-      <div class="mt-4">
-        <div class="columns">
-          <div class="column mr-4">
-            <label>Email ID<span class="has-text-danger ml-1">*</span></label>
-            <b-field>
-              <b-input
-                type="text"
-                v-model="studentEmail"
-                placeholder="Enter email id"
-              />
-            </b-field>
+    <ValidationObserver v-slot="{ invalid }">
+      <form @submit.prevent="">
+        <div class="mt-4 mx-4">
+          <div class="columns">
+            <div class="column mr-4">
+              <label
+                >User Name<span class="has-text-danger ml-1">*</span></label
+              >
+              <b-field>
+                <ValidationProvider
+                  name="Username"
+                  :rules="{ required: true }"
+                  v-slot="{ errors }"
+                >
+                  <b-input
+                    type="text"
+                    v-model="username"
+                    placeholder="Enter username"
+                  />
+                  <span class="has-text-danger error-massage">{{
+                    errors[0]
+                  }}</span>
+                </ValidationProvider>
+              </b-field>
+            </div>
+            <div class="column">
+              <label>Password<span class="has-text-danger ml-1">*</span></label>
+              <b-field>
+                <ValidationProvider
+                  name="Password"
+                  :rules="{ required: true }"
+                  v-slot="{ errors }"
+                >
+                  <b-input
+                    type="text"
+                    v-model="password"
+                    placeholder="Enter password"
+                  />
+                  <span class="has-text-danger error-massage">{{
+                    errors[0]
+                  }}</span>
+                </ValidationProvider>
+              </b-field>
+            </div>
           </div>
-          <div class="column"></div>
-        </div>
-      </div>
-      <div class="is-flex mr-4 button-place">
-        <b-button class="is-size-5 cancel-button" @click="$router.go(-1)"
-          >Cancel</b-button
-        >
+          <div class="mt-4">
+            <div class="columns">
+              <div class="column mr-4">
+                <label>Email ID</label>
+                <b-field>
+                  <ValidationProvider
+                    name="Email ID"
+                    :rules="{ email: true }"
+                    v-slot="{ errors }"
+                  >
+                    <b-input
+                      type="text"
+                      v-model="studentEmail"
+                      placeholder="Enter email id"
+                    />
+                    <span class="has-text-danger error-massage">{{
+                      errors[0]
+                    }}</span>
+                  </ValidationProvider>
+                </b-field>
+              </div>
+              <div class="column"></div>
+            </div>
+          </div>
+          <div class="is-flex mr-4 button-place">
+            <b-button class="is-size-5 cancel-button" @click="$router.go(-1)"
+              >Cancel</b-button
+            >
 
-        <b-button class="is-primary is-size-5 ml-5 continue-button-width"
-          >Create Student</b-button
-        >
-      </div>
-    </div>
+            <b-button
+              class="is-primary is-size-5 ml-5 continue-button-width"
+              :disabled="invalid"
+              >Create Student</b-button
+            >
+          </div>
+        </div>
+      </form></ValidationObserver
+    >
   </div>
 </template>
 
 <script>
-export default { name: "CreateStudentsView" };
+import "@/shared/validate.js";
+export default {
+  name: "CreateStudentsView",
+  data() {
+    return { password: "", studentEmail: "", username: "" };
+  },
+};
 </script>
 
 <style lang="scss" scoped></style>

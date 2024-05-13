@@ -4,65 +4,99 @@
       class="columns is-flex is-align-items-center is-justify-content-center height-style"
     >
       <div class="column is-6"></div>
-      <div class="column is-5 half-bg has-text-centered py-4">
-        <p>
+      <div class="column is-5 half-bg py-4">
+        <p class="has-text-centered">
           <strong class="has-text-primary-dark is-size-1">Welcome Back,</strong>
         </p>
-        <p class="has-text-primary-dark font-size-one">Let's Sign in</p>
-        <div class="px-4">
-          <b-field class="mt-5">
-            <b-input
-              placeholder="Enter your username"
-              size="is-large"
-              v-model="username"
-              rounded
-            />
-          </b-field>
-          <b-field class="mt-5">
-            <b-input
-              placeholder="Enter your password"
-              type="password"
-              size="is-large"
-              icon-right="close-circle"
-              icon-right-clickable
-              v-model="password"
-              rounded
-              password-reveal
-          /></b-field>
-          <b-field class="mt-5">
-            <b-select
-              placeholder="Select a role"
-              rounded
-              v-model="role"
-              size="is-large"
-              expanded
-            >
-              <option value="student">Student</option>
-              <option value="admin">Admin</option>
-              <option value="tutor">Tutor</option>
-            </b-select>
-          </b-field>
-          <b-button
-            type="is-primary"
-            size="is-large"
-            class="mt-6 mb-6"
-            :disabled="invalid"
-            expanded
-            rounded
-            @click="
-              () => {
-                $router.push(`/dashboard`);
-              }
-            "
-            >Sign In</b-button
-          >
-        </div>
+        <p class="has-text-primary-dark font-size-one has-text-centered">
+          Let's Sign in
+        </p>
+        <ValidationObserver v-slot="{ invalid }">
+          <form @submit.prevent="">
+            <div class="px-4">
+              <b-field class="mt-5">
+                <ValidationProvider
+                  name="Username"
+                  :rules="{ required: true }"
+                  v-slot="{ errors }"
+                >
+                  <b-input
+                    placeholder="Enter your username"
+                    size="is-large"
+                    v-model="username"
+                    rounded
+                  />
+                  <span class="has-text-danger error-massage">{{
+                    errors[0]
+                  }}</span>
+                </ValidationProvider>
+              </b-field>
+              <b-field class="mt-5">
+                <ValidationProvider
+                  name="Password"
+                  :rules="{ required: true }"
+                  v-slot="{ errors }"
+                >
+                  <b-input
+                    placeholder="Enter your password"
+                    type="password"
+                    size="is-large"
+                    icon-right="close-circle"
+                    icon-right-clickable
+                    v-model="password"
+                    rounded
+                    password-reveal
+                  /><span class="has-text-danger error-massage">{{
+                    errors[0]
+                  }}</span>
+                </ValidationProvider></b-field
+              >
+              <b-field class="mt-5">
+                <ValidationProvider
+                  name="Role"
+                  :rules="{ required: true }"
+                  v-slot="{ errors }"
+                >
+                  <b-select
+                    placeholder="Select a role"
+                    rounded
+                    v-model="role"
+                    size="is-large"
+                    expanded
+                  >
+                    <option value="student">Student</option>
+                    <option value="admin">Admin</option>
+                    <option value="tutor">Tutor</option>
+                  </b-select>
+                  <span class="has-text-danger error-massage">{{
+                    errors[0]
+                  }}</span>
+                </ValidationProvider>
+              </b-field>
+              <b-button
+                type="is-primary"
+                size="is-large"
+                class="mt-6 mb-6"
+                :disabled="invalid"
+                expanded
+                rounded
+                @click="
+                  () => {
+                    $router.push(`/dashboard`);
+                  }
+                "
+                >Sign In</b-button
+              >
+            </div>
+          </form></ValidationObserver
+        >
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import "@/shared/validate.js";
 export default {
   name: "LogIn",
   props: {
