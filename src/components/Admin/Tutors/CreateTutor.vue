@@ -58,17 +58,17 @@
                 </b-field>
               </div>
               <div class="column">
-                <label>Email ID</label>
+                <label>Email</label>
                 <b-field>
                   <ValidationProvider
-                    name="Username"
+                    name="Email"
                     :rules="{ email: true }"
                     v-slot="{ errors }"
                   >
                     <b-input
                       type="text"
                       v-model="email"
-                      placeholder="Enter email id"
+                      placeholder="Enter email"
                     />
                     <span class="has-text-danger error-massage">{{
                       errors[0]
@@ -78,17 +78,7 @@
               </div>
             </div>
           </div>
-          <div class="mt-4">
-            <div class="columns">
-              <div class="column mr-4">
-                <label>Expertise</label>
-                <b-field>
-                  <b-input type="text" v-model="expertise" />
-                </b-field>
-              </div>
-              <div class="column"></div>
-            </div>
-          </div>
+
           <div class="mt-4">
             <div class="columns">
               <div class="column mr-4">
@@ -171,6 +161,27 @@
               </div>
             </div>
           </div>
+          <div class="mt-4">
+            <div class="columns">
+              <div class="column is-10 mr-4">
+                <label>Expertise</label>
+                <div class="mx-3 mt-2">
+                  <div class="columns expertise-list">
+                    <div
+                      v-for="(entry, entryIndex) in expertiseList"
+                      :key="entryIndex"
+                      class="expertise-item-list"
+                    >
+                      <b-checkbox v-model="expertise" :native-value="expertise">
+                        {{ entry }}
+                      </b-checkbox>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="column"></div>
+            </div>
+          </div>
           <div class="is-flex mr-4 button-place">
             <b-button class="is-size-5 cancel-button" @click="$router.go(-1)"
               >Cancel</b-button
@@ -194,11 +205,21 @@ export default {
   name: "CreateTutorsView",
   data() {
     return {
+      expertiseList: [
+        "Course 1",
+        "Course 2",
+        "Course 3",
+        "Course 4",
+        "Course 5",
+        "Course 6",
+        "Course 7",
+        "Course 8",
+      ],
       username: "",
       password: "",
       name: "",
       email: "",
-      expertise: "",
+      expertise: [],
       mobileNumber: "",
       whatsAppNumber: "",
       facebook: "",
@@ -206,6 +227,13 @@ export default {
       linkedIn: "",
       youtube: "",
     };
+  },
+  methods: {
+    removeItem(item) {
+      if (this.expertise.includes(item)) {
+        this.expertise = this.expertise.filter((element) => element !== item);
+      }
+    },
   },
 };
 </script>

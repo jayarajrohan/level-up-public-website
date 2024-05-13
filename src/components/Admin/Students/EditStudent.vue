@@ -49,17 +49,17 @@
           <div class="mt-4">
             <div class="columns">
               <div class="column mr-4">
-                <label>Email ID</label>
+                <label>Email</label>
                 <b-field>
                   <ValidationProvider
-                    name="Email ID"
+                    name="Email"
                     :rules="{ email: true }"
                     v-slot="{ errors }"
                   >
                     <b-input
                       type="text"
                       v-model="studentEmail"
-                      placeholder="Enter email id"
+                      placeholder="Enter email"
                     />
                     <span class="has-text-danger error-massage">{{
                       errors[0]

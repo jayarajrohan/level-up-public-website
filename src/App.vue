@@ -105,4 +105,13 @@ export default {
 .error-massage {
   font-size: 16px;
 }
+.expertise-list {
+  flex-wrap: wrap;
+  /*padding: 0.5rem;*/
+  align-items: baseline;
+}
+.expertise-item-list {
+  width: 220px;
+  height: 40px;
+}
 </style>
