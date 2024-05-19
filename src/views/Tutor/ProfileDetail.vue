@@ -109,15 +109,8 @@
                   <label>Availability</label>
                   <div class="mt-2">
                     <div class="columns">
-                      <div class="column is-3">
-                        <b-checkbox
-                          v-model="availability"
-                          :native-value="monday"
-                        >
-                          Monday
-                        </b-checkbox>
-                      </div>
-                      <div class="column">
+                      <div class="column is-3"></div>
+                      <!-- <div class="column">
                         <div class="columns">
                           <div class="column mr-4">
                             <b-timepicker
@@ -138,7 +131,7 @@
                             </b-timepicker>
                           </div>
                         </div>
-                      </div>
+                      </div> -->
                     </div>
                   </div>
                 </div>
