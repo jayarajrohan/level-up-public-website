@@ -109,7 +109,15 @@
                   <label>Availability</label>
                   <div class="mt-2">
                     <div class="columns">
-                      <div class="column is-3"></div>
+                      <div class="column is-3">
+                        <AvailableDayAndTime
+                          @getDetails="
+                            (value) => {
+                              availabilityDetail(value);
+                            }
+                          "
+                        />
+                      </div>
                       <!-- <div class="column">
                         <div class="columns">
                           <div class="column mr-4">
@@ -259,7 +267,7 @@
                 >Cancel</b-button
               >
               <b-button
-                :disabled="invalid"
+                :disabled="invalid || availability === undefined"
                 class="is-primary is-size-5 ml-5 continue-button-width"
                 >Save</b-button
               >
@@ -273,6 +281,7 @@
 
 <script>
 import "@/shared/validate.js";
+import AvailableDayAndTime from "@/components/AvailableDayAndTime/AvailableDayAndTime.vue";
 export default {
   name: "EditTutorsView",
   data() {
@@ -303,6 +312,14 @@ export default {
       linkedIn: "",
       youtube: "",
     };
+  },
+  components: {
+    AvailableDayAndTime,
+  },
+  methods: {
+    availabilityDetail(value) {
+      this.availability = value;
+    },
   },
 };
 </script>
