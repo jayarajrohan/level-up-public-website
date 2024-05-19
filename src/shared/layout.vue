@@ -92,17 +92,4 @@ export default {
   position: absolute;
   bottom: 2px;
 }
-.top-bar {
-  background: var(--white, #fff);
-  box-shadow: 0px 2px 16px 0px rgba(0, 0, 0, 0.1);
-}
-.logo {
-  background-color: #006fb7;
-  width: 200px;
-  font-size: 25px;
-  padding-block: 5px;
-  margin-top: 7px;
-  text-align: end;
-  border-radius: 15px 0;
-}
 </style>

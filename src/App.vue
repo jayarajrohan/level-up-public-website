@@ -114,4 +114,22 @@ export default {
   width: 220px;
   height: 40px;
 }
+.top-bar {
+  background: var(--white, #fff);
+  box-shadow: 0px 2px 16px 0px rgba(0, 0, 0, 0.1);
+}
+.logo {
+  background-color: #006fb7;
+  width: 200px;
+  font-size: 25px;
+  padding-block: 5px;
+  margin-top: 7px;
+  text-align: end;
+  border-radius: 15px 0;
+  color: #fff;
+  color: var(--white, #fff);
+  font-weight: 500;
+  line-height: normal;
+  letter-spacing: 0.18px;
+}
 </style>

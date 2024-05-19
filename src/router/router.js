@@ -104,5 +104,15 @@ const routes = [
       }),
     ],
   },
+  {
+    name: "ViewersScreen",
+    path: "/tutor/viewersScreen",
+    component: () => import("@/components/Tutor/ViewersScreen.vue"),
+  },
+  {
+    name: "ProfileScreen",
+    path: "/tutor/profileScreen",
+    component: () => import("@/components/Tutor/ProfileDetail.vue"),
+  },
 ];
 export default routes;

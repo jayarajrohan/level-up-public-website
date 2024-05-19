@@ -7,6 +7,28 @@
       </div>
       <div class="column ml-2 font-style-two">11-05-2024</div>
     </div>
+    <div class="mt-6">
+      <div class="columns">
+        <div class="column mx-6 box-style">
+          <div class="font-color-one pt-4">Total number of students</div>
+          <div class="pb-4">
+            <strong class="is-size-4 has-text-primary pb-4">500</strong>
+          </div>
+        </div>
+        <div class="column mx-6 box-style">
+          <div class="font-color-one pt-4">Total number of tutors</div>
+          <div class="pb-4">
+            <strong class="is-size-4 has-text-primary pb-4">15</strong>
+          </div>
+        </div>
+        <div class="column mx-6 box-style">
+          <div class="font-color-one pt-4">Total number of courses</div>
+          <div class="pb-4">
+            <strong class="is-size-4 has-text-primary pb-4">50</strong>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -14,4 +36,10 @@
 export default { name: "DashboardView" };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss">
+.box-style {
+  background-color: #e8eaef;
+  border-radius: 8px;
+  text-align: center;
+}
+</style>
