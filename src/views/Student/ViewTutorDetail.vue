@@ -162,6 +162,14 @@
             </div>
             <div class="column ml-6">
               <p class="font-size-one font-color-one">Social Media Details</p>
+              <div>
+                <font-awesome-icon
+                  :icon="['fab', 'facebook']"
+                  style="font-size: 50px; color: #00f"
+                />
+                <font-awesome-icon :icon="['fab', 'twitter']" />
+                <font-awesome-icon :icon="['fab', 'instagram']" />
+              </div>
             </div>
           </div>
         </div>

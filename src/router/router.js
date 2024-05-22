@@ -145,5 +145,11 @@ const routes = [
       },
     ],
   },
+  {
+    path: "*",
+    component: () => import("@/views/Login.vue"),
+    meta: { requiresAuth: true },
+    redirect: "/",
+  },
 ];
 export default routes;
