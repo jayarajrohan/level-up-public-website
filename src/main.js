@@ -7,13 +7,16 @@ import MenuIcon from "vue-material-design-icons/Menu.vue";
 import { ValidationObserver, ValidationProvider } from "vee-validate";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { faUser } from "@fortawesome/free-solid-svg-icons";
 import {
   faFacebook,
   faTwitter,
-  faInstagram,
+  faYoutube,
+  faWhatsapp,
+  faLinkedin,
 } from "@fortawesome/free-brands-svg-icons";
 
-library.add(faFacebook, faTwitter, faInstagram);
+library.add(faFacebook, faTwitter, faYoutube, faWhatsapp, faLinkedin, faUser);
 
 Vue.use(Buefy);
 Vue.component("menu-icon", MenuIcon);

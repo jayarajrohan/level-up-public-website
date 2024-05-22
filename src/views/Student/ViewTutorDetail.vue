@@ -168,7 +168,10 @@
                   style="font-size: 50px; color: #00f"
                 />
                 <font-awesome-icon :icon="['fab', 'twitter']" />
-                <font-awesome-icon :icon="['fab', 'instagram']" />
+                <font-awesome-icon :icon="['fab', 'youtube']" />
+                <font-awesome-icon :icon="['fab', 'whatsapp']" />
+                <font-awesome-icon :icon="['fab', 'linkedin']" />
+                <font-awesome-icon :icon="['fas', 'user']" />
               </div>
             </div>
           </div>
