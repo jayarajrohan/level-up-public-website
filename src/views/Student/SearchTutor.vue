@@ -13,7 +13,7 @@ div
           width="35px"
           @click="
             () => {
-              $router.push(`/student/profileScreen`);
+              $router.push(`/student/profile`);
             }
           "
         />
@@ -145,7 +145,7 @@ export default {
           {
             text: "View",
             onClick: () => {
-              this.$router.push(`/student/tutorDetailViewScreen`);
+              this.$router.push(`/student/tutor-details`);
             },
             icon: "",
             type: "is-primary",

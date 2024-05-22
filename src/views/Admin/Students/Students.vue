@@ -13,7 +13,7 @@
               expanded
               @click="
                 () => {
-                  $router.push(`/students/create-student`);
+                  $router.push(`/admin/dashboard/students/create`);
                 }
               "
               >Create Student</b-button
@@ -135,7 +135,7 @@ export default {
           {
             text: "Edit",
             onClick: () => {
-              this.$router.push(`/students/edit-student`);
+              this.$router.push(`/admin/dashboard/students/edit`);
             },
             icon: "",
             type: "is-primary",
@@ -157,7 +157,7 @@ export default {
           {
             text: "Edit",
             onClick: () => {
-              this.$router.push(`/students/edit-student`);
+              this.$router.push(`/admin/dashboard/students/edit`);
             },
             icon: "",
             type: "is-primary",
@@ -180,7 +180,7 @@ export default {
           {
             text: "Edit",
             onClick: () => {
-              this.$router.push(`/students/edit-student`);
+              this.$router.push(`/admin/dashboard/students/edit`);
             },
             icon: "",
             type: "is-primary",
@@ -202,7 +202,7 @@ export default {
           {
             text: "Edit",
             onClick: () => {
-              this.$router.push(`/students/edit-student`);
+              this.$router.push(`/admin/dashboard/students/edit`);
             },
             icon: "",
             type: "is-primary",

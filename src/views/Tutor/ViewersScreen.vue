@@ -15,7 +15,7 @@ div
               width="35px"
               @click="
                 () => {
-                  $router.push(`/tutor/profileScreen`);
+                  $router.push(`/tutor/profile`);
                 }
               "
             />

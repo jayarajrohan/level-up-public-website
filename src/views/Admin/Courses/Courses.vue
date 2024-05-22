@@ -13,7 +13,7 @@
               expanded
               @click="
                 () => {
-                  $router.push(`/courses/create-course`);
+                  $router.push(`/admin/dashboard/courses/create`);
                 }
               "
               >Create Course</b-button
@@ -136,7 +136,7 @@ export default {
           {
             text: "Edit",
             onClick: () => {
-              this.$router.push(`/courses/edit-course`);
+              this.$router.push(`/admin/dashboard/courses/edit`);
             },
             icon: "",
             type: "is-primary",
@@ -159,7 +159,7 @@ export default {
           {
             text: "Edit",
             onClick: () => {
-              this.$router.push(`/courses/edit-course`);
+              this.$router.push(`/admin/dashboard/courses/edit`);
             },
             icon: "",
             type: "is-primary",

@@ -82,7 +82,7 @@
                 rounded
                 @click="
                   () => {
-                    $router.push(`/dashboard`);
+                    $router.push(`/admin/dashboard`);
                   }
                 "
                 >Sign In</b-button

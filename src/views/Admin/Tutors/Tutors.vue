@@ -13,7 +13,7 @@
               expanded
               @click="
                 () => {
-                  $router.push(`/tutors/create-tutor`);
+                  $router.push(`/admin/dashboard/tutors/create`);
                 }
               "
               >Create Tutor</b-button
@@ -143,7 +143,7 @@ export default {
           {
             text: "Edit",
             onClick: () => {
-              this.$router.push(`/tutors/edit-tutor`);
+              this.$router.push(`/admin/dashboard/tutors/edit`);
             },
             icon: "",
             type: "is-primary",
@@ -166,7 +166,7 @@ export default {
           {
             text: "Edit",
             onClick: () => {
-              this.$router.push(`/tutors/edit-tutor`);
+              this.$router.push(`/admin/dashboard/tutors/edit`);
             },
             icon: "",
             type: "is-primary",
