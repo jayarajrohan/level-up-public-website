@@ -105,6 +105,10 @@ export default {
 .error-massage {
   font-size: 16px;
 }
+.pointer-style {
+  cursor: pointer;
+}
+
 .expertise-list {
   flex-wrap: wrap;
   /*padding: 0.5rem;*/
