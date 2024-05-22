@@ -123,5 +123,10 @@ const routes = [
     path: "/student/searchTutor",
     component: () => import("@/views/Student/SearchTutor.vue"),
   },
+  {
+    name: "TutorDetailViewScreen",
+    path: "/student/tutorDetailViewScreen",
+    component: () => import("@/views/Student/ViewTutorDetail.vue"),
+  },
 ];
 export default routes;

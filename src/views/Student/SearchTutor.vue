@@ -13,7 +13,7 @@ div
           width="35px"
           @click="
             () => {
-              $router.push(`/tutor/profileScreen`);
+              $router.push(`/student/profileScreen`);
             }
           "
         />
@@ -81,6 +81,14 @@ div
               />
             </div>
           </div>
+          <div class="mt-4 mx-4">
+            <AppTable
+              :data="tutorData"
+              :columns="tutorHeader"
+              row-class-one="striped-table-color-2"
+              rowClassTwo="striped-table-color"
+            />
+          </div>
         </div></form
     ></ValidationObserver>
   </div>
@@ -88,13 +96,63 @@ div
 
 <script>
 import "@/shared/validate.js";
+import AppTable from "@/shared/appTable.vue";
 import AvailableDayAndTime from "@/components/AvailableDayAndTime/AvailableDayAndTime.vue";
 export default {
   name: "FindTutor",
   components: {
     AvailableDayAndTime,
+    AppTable,
   },
   data() {
+    const tutorHeader = [
+      {
+        field: "username",
+        label: "User name",
+        tableHeaderAttributes: this.paymentHeadShow,
+        tableDataAttributes: this.columnTdAttrs,
+        sortable: true,
+      },
+      {
+        field: "name",
+        label: "Name",
+        tableHeaderAttributes: this.paymentHeadShow,
+        tableDataAttributes: this.columnTdAttrs,
+        sortable: true,
+      },
+      {
+        field: "email",
+        label: "Email",
+        tableHeaderAttributes: this.paymentHeadShow,
+        tableDataAttributes: this.columnTdAttrs,
+        sortable: true,
+      },
+      {
+        field: "button",
+        label: "Action",
+        tableHeaderAttributes: this.paymentHeadShow,
+        tableDataAttributes: this.columnTdAttrs,
+        sortable: false,
+      },
+    ];
+    const tutorData = [
+      {
+        id: 0,
+        username: "Sarmi1106",
+        name: "Sarmisha",
+        email: "sarmisha@gmail.com",
+        button: [
+          {
+            text: "View",
+            onClick: () => {
+              this.$router.push(`/student/tutorDetailViewScreen`);
+            },
+            icon: "",
+            type: "is-primary",
+          },
+        ],
+      },
+    ];
     return {
       expertiseList: [
         "Course 1",
@@ -107,6 +165,8 @@ export default {
         "Course 8",
       ],
       courses: [],
+      tutorHeader,
+      tutorData,
     };
   },
   methods: {

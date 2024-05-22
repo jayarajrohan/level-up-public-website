@@ -39,17 +39,6 @@ div
             >Edit your details</b-button
           >
         </div>
-        <div class="column is-narrow">
-          <b-button
-            class="is-primary is-size-5 ml-5 continue-button-width"
-            @click="
-              () => {
-                $router.push(`/student/searchTutor`);
-              }
-            "
-            >Search Tutor</b-button
-          >
-        </div>
       </div>
 
       <ValidationObserver v-slot="{ invalid }">
