@@ -172,6 +172,7 @@
                 <font-awesome-icon :icon="['fab', 'whatsapp']" />
                 <font-awesome-icon :icon="['fab', 'linkedin']" />
                 <font-awesome-icon :icon="['fas', 'user']" />
+                <font-awesome-icon :icon="['fas', 'phone']" />
               </div>
             </div>
           </div>
