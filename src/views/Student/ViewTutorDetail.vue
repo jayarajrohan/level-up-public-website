@@ -154,25 +154,64 @@
             <div class="column mr-6">
               <p class="font-size-one font-color-one">Contact Details</p>
               <div class="mt-3">
-                {{ mobileNumber }}
+                <div class="columns v-centered">
+                  <div class="column is-narrow mr-4 pointer-style">
+                    <font-awesome-icon
+                      :icon="['fas', 'phone']"
+                      style="font-size: 22px"
+                    />
+                  </div>
+                  <div class="column is-size-5 is-narrow pointer-style">
+                    {{ mobileNumber }}
+                  </div>
+                </div>
               </div>
-              <div class="mt-3">
-                {{ whatsAppNumber }}
+              <div class="my-4">
+                <div class="columns v-centered">
+                  <div class="column is-narrow mr-4 pointer-style">
+                    <font-awesome-icon
+                      :icon="['fab', 'whatsapp']"
+                      style="font-size: 30px; color: #075e54"
+                    />
+                  </div>
+                  <div class="column is-size-5 pointer-style">
+                    {{ whatsAppNumber }}
+                  </div>
+                </div>
               </div>
             </div>
             <div class="column ml-6">
               <p class="font-size-one font-color-one">Social Media Details</p>
-              <div>
-                <font-awesome-icon
-                  :icon="['fab', 'facebook']"
-                  style="font-size: 50px; color: #00f"
-                />
-                <font-awesome-icon :icon="['fab', 'twitter']" />
-                <font-awesome-icon :icon="['fab', 'youtube']" />
-                <font-awesome-icon :icon="['fab', 'whatsapp']" />
-                <font-awesome-icon :icon="['fab', 'linkedin']" />
-                <font-awesome-icon :icon="['fas', 'user']" />
-                <font-awesome-icon :icon="['fas', 'phone']" />
+              <div class="mt-3">
+                <div class="columns">
+                  <div class="column is-narrow mr-4 pointer-style">
+                    <font-awesome-icon
+                      :icon="['fab', 'facebook']"
+                      style="font-size: 40px; color: #1877f2"
+                    />
+                  </div>
+                  <div class="column is-narrow mr-4 pointer-style">
+                    <font-awesome-icon
+                      :icon="['fab', 'twitter']"
+                      style="font-size: 40px; color: #1da1f2"
+                    />
+                  </div>
+                  <div class="column is-narrow mr-4 pointer-style">
+                    <font-awesome-icon
+                      :icon="['fab', 'youtube']"
+                      style="font-size: 40px; color: #ff0000"
+                    />
+                  </div>
+                  <div class="column is-narrow mr-4 pointer-style">
+                    <font-awesome-icon
+                      :icon="['fab', 'linkedin']"
+                      style="font-size: 40px; color: #0a66c2"
+                    />
+                  </div>
+                  <!-- <div class="column is-narrow mr-4">
+                    <font-awesome-icon :icon="['fas', 'user']" />
+                  </div> -->
+                </div>
               </div>
             </div>
           </div>
