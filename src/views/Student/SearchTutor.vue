@@ -10,7 +10,7 @@ div
           src="@/assets/images/Profile.webp"
           alt="profile"
           class="cover-style mt-2 border-style"
-          width="35px"
+          width="44px"
           @click="
             () => {
               $router.push(`/student/profile`);
