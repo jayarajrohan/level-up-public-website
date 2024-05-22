@@ -49,6 +49,17 @@
           <div class="mt-4">
             <div class="columns">
               <div class="column mr-4">
+                <label>Name</label>
+                <b-field>
+                  <b-input
+                    type="text"
+                    v-model="studentName"
+                    readonly="!isEditDetail"
+                    placeholder="Enter name"
+                  />
+                </b-field>
+              </div>
+              <div class="column">
                 <label>Email</label>
                 <b-field>
                   <ValidationProvider
@@ -67,7 +78,6 @@
                   </ValidationProvider>
                 </b-field>
               </div>
-              <div class="column"></div>
             </div>
           </div>
           <div class="is-flex mr-4 button-place">
@@ -92,7 +102,7 @@ import "@/shared/validate.js";
 export default {
   name: "CreateStudentsView",
   data() {
-    return { password: "", studentEmail: "", username: "" };
+    return { password: "", studentEmail: "", username: "", studentName: "" };
   },
 };
 </script>

@@ -113,5 +113,15 @@ const routes = [
     path: "/tutor/profileScreen",
     component: () => import("@/views/Tutor/ProfileDetail.vue"),
   },
+  {
+    name: "ProfileScreen",
+    path: "/student/profileScreen",
+    component: () => import("@/views/Student/StudentProfile.vue"),
+  },
+  {
+    name: "SearchTutorScreen",
+    path: "/student/searchTutor",
+    component: () => import("@/views/Student/SearchTutor.vue"),
+  },
 ];
 export default routes;

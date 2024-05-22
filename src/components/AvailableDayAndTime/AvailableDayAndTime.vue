@@ -1,75 +1,103 @@
 <template>
   <div>
+    <div class="columns">
+      <div class="column is-3 font-color-one">Days</div>
+      <div class="column is-3 font-color-one mr-4">Start Time</div>
+      <div class="column is-3 font-color-one">End Time</div>
+      <div class="column"></div>
+    </div>
     <div v-for="(day, index) in week" :key="day.day">
-      <div class="container">
-        <div>
-          <b-checkbox v-model="day.value" @input="onChange">
-            {{ day.day }}
-          </b-checkbox>
-        </div>
-        <div>
-          <div class="time-container" v-if="day.value === true">
-            <div>
-              <b-select
-                v-model="day.fromHour"
-                @input="
-                  () => {
-                    onTimeChange(index);
-                  }
-                "
-              >
-                <option v-for="hour in hours" :value="hour" :key="hour">
-                  {{ hour }}
-                </option>
-              </b-select>
-            </div>
-            <div>
-              <b-select
-                v-model="day.fromMinute"
-                @input="
-                  () => {
-                    onTimeChange(index);
-                  }
-                "
-              >
-                <option v-for="minute in minutes" :value="minute" :key="minute">
-                  {{ minute }}
-                </option>
-              </b-select>
-            </div>
-            <div>
-              <b-select
-                v-model="day.toHour"
-                @input="
-                  () => {
-                    onTimeChange(index);
-                  }
-                "
-              >
-                <option v-for="hour in hours" :value="hour" :key="hour">
-                  {{ hour }}
-                </option>
-              </b-select>
-            </div>
-            <div>
-              <b-select
-                v-model="day.toMinute"
-                @input="
-                  () => {
-                    onTimeChange(index);
-                  }
-                "
-              >
-                <option v-for="minute in minutes" :value="minute" :key="minute">
-                  {{ minute }}
-                </option>
-              </b-select>
+      <div class="mb-2">
+        <div class="columns">
+          <div class="column is-3">
+            <b-checkbox v-model="day.value" @input="onChange">
+              {{ day.day }}
+            </b-checkbox>
+          </div>
+          <div class="column is-3 mr-4">
+            <div class="columns is-vcentered" v-if="day.value === true">
+              <div class="column is-5">
+                <b-select
+                  v-model="day.fromHour"
+                  expanded
+                  @input="
+                    () => {
+                      onTimeChange(index);
+                    }
+                  "
+                >
+                  <option v-for="hour in hours" :value="hour" :key="hour">
+                    {{ hour }}
+                  </option>
+                </b-select>
+              </div>
+              <div class="column has-text-centered">:</div>
+              <div class="column is-5">
+                <b-select
+                  v-model="day.fromMinute"
+                  expanded
+                  @input="
+                    () => {
+                      onTimeChange(index);
+                    }
+                  "
+                >
+                  <option
+                    v-for="minute in minutes"
+                    :value="minute"
+                    :key="minute"
+                  >
+                    {{ minute }}
+                  </option>
+                </b-select>
+              </div>
             </div>
           </div>
-          <div>
-            {{ day.error }}
+          <div class="column is-3">
+            <div class="columns is-vcentered" v-if="day.value === true">
+              <div class="column is-5">
+                <b-select
+                  v-model="day.toHour"
+                  expanded
+                  @input="
+                    () => {
+                      onTimeChange(index);
+                    }
+                  "
+                >
+                  <option v-for="hour in hours" :value="hour" :key="hour">
+                    {{ hour }}
+                  </option>
+                </b-select>
+              </div>
+              <div class="column has-text-centered">:</div>
+              <div class="column is-5">
+                <b-select
+                  v-model="day.toMinute"
+                  expanded
+                  @input="
+                    () => {
+                      onTimeChange(index);
+                    }
+                  "
+                >
+                  <option
+                    v-for="minute in minutes"
+                    :value="minute"
+                    :key="minute"
+                  >
+                    {{ minute }}
+                  </option>
+                </b-select>
+              </div>
+            </div>
           </div>
+          <div class="column"></div>
         </div>
+      </div>
+
+      <div>
+        {{ day.error }}
       </div>
     </div>
   </div>
@@ -237,7 +265,7 @@ export default {
 </script>
 
 <style>
-.container {
+/* .container {
   display: flex;
   align-items: center;
 }
@@ -245,5 +273,5 @@ export default {
   display: flex;
   align-items: center;
   gap: "5px";
-}
+} */
 </style>

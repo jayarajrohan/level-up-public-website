@@ -1,3 +1,4 @@
+div
 <template>
   <div>
     <div class="columns top-bar py-1 px-2">
@@ -23,7 +24,23 @@
     </div>
 
     <div style="margin-inline: 100px" class="mt-4">
-      <p class="has-text-primary is-size-4">Your Details</p>
+      <div class="columns v-centered">
+        <div class="column">
+          <p class="has-text-primary is-size-4">Profile</p>
+        </div>
+        <div class="column is-narrow">
+          <b-button
+            class="is-primary is-size-5 ml-5 continue-button-width"
+            @click="
+              () => {
+                isEditDetail = true;
+              }
+            "
+            >Edit your details</b-button
+          >
+        </div>
+      </div>
+
       <ValidationObserver v-slot="{ invalid }">
         <form @submit.prevent="">
           <div class="mt-4 mx-4">
@@ -41,6 +58,7 @@
                     <b-input
                       type="text"
                       v-model="username"
+                      readonly="!isEditDetail"
                       placeholder="Enter user name"
                     /><span class="has-text-danger error-massage">{{
                       errors[0]
@@ -60,6 +78,7 @@
                   >
                     <b-input
                       type="text"
+                      readonly="!isEditDetail"
                       v-model="password"
                       placeholder="Enter password"
                     />
@@ -78,6 +97,7 @@
                     <b-input
                       type="text"
                       v-model="name"
+                      readonly="!isEditDetail"
                       placeholder="Enter name"
                     />
                   </b-field>
@@ -92,6 +112,7 @@
                     >
                       <b-input
                         type="text"
+                        readonly="!isEditDetail"
                         v-model="email"
                         placeholder="Enter email"
                       />
@@ -104,46 +125,15 @@
               </div>
             </div>
             <div class="mt-4">
-              <div class="columns">
-                <div class="column is-10 mr-4">
-                  <label>Availability</label>
-                  <div class="mt-2">
-                    <div class="columns">
-                      <div class="column is-3">
-                        <AvailableDayAndTime
-                          @getDetails="
-                            (value) => {
-                              availabilityDetail(value);
-                            }
-                          "
-                        />
-                      </div>
-                      <!-- <div class="column">
-                        <div class="columns">
-                          <div class="column mr-4">
-                            <b-timepicker
-                              placeholder="From"
-                              icon="clock"
-                              :incrementMinutes="minutesGranularity"
-                              v-model="from_time"
-                            >
-                            </b-timepicker>
-                          </div>
-                          <div class="column">
-                            <b-timepicker
-                              placeholder="To"
-                              icon="clock"
-                              :incrementMinutes="minutesGranularity"
-                              v-model="to_time"
-                            >
-                            </b-timepicker>
-                          </div>
-                        </div>
-                      </div> -->
-                    </div>
-                  </div>
-                </div>
-                <div class="column"></div>
+              <label>Availability</label>
+              <div class="mt-2">
+                <AvailableDayAndTime
+                  @getDetails="
+                    (value) => {
+                      availabilityDetail(value);
+                    }
+                  "
+                />
               </div>
             </div>
             <div class="mt-4">
@@ -157,7 +147,11 @@
                       </div>
                       <div class="column">
                         <b-field>
-                          <b-input type="text" v-model="mobileNumber" />
+                          <b-input
+                            type="text"
+                            v-model="mobileNumber"
+                            readonly="!isEditDetail"
+                          />
                         </b-field>
                       </div>
                     </div>
@@ -169,7 +163,11 @@
                       </div>
                       <div class="column">
                         <b-field>
-                          <b-input type="text" v-model="whatsAppNumber" />
+                          <b-input
+                            type="text"
+                            v-model="whatsAppNumber"
+                            readonly="!isEditDetail"
+                          />
                         </b-field>
                       </div>
                     </div>
@@ -186,7 +184,11 @@
                       </div>
                       <div class="column">
                         <b-field>
-                          <b-input type="text" v-model="facebook" />
+                          <b-input
+                            type="text"
+                            v-model="facebook"
+                            readonly="!isEditDetail"
+                          />
                         </b-field>
                       </div>
                     </div>
@@ -198,7 +200,11 @@
                       </div>
                       <div class="column">
                         <b-field>
-                          <b-input type="text" v-model="twitter" />
+                          <b-input
+                            type="text"
+                            v-model="twitter"
+                            readonly="!isEditDetail"
+                          />
                         </b-field>
                       </div>
                     </div>
@@ -210,7 +216,11 @@
                       </div>
                       <div class="column">
                         <b-field>
-                          <b-input type="text" v-model="linkedIn" />
+                          <b-input
+                            type="text"
+                            v-model="linkedIn"
+                            readonly="!isEditDetail"
+                          />
                         </b-field>
                       </div>
                     </div>
@@ -222,7 +232,11 @@
                       </div>
                       <div class="column">
                         <b-field>
-                          <b-input type="text" v-model="youtube" />
+                          <b-input
+                            type="text"
+                            v-model="youtube"
+                            readonly="!isEditDetail"
+                          />
                         </b-field>
                       </div>
                     </div>
@@ -244,6 +258,7 @@
                         <b-checkbox
                           v-model="expertise"
                           :native-value="expertise"
+                          readonly="!isEditDetail"
                         >
                           {{ entry }}
                         </b-checkbox>
@@ -254,19 +269,20 @@
                 <div class="column"></div>
               </div>
             </div>
-            {{ to_time }} {{ from_time }}
-            <div class="is-flex mr-4">
-              <b-button class="is-size-5 cancel-button" @click="$router.go(-1)"
+
+            <div class="is-pulled-right my-4">
+              <b-button
+                class="is-size-5 cancel-button"
+                @click="$router.go(-1)"
+                v-if="!isEditDetail"
                 >Back</b-button
               >
 
-              <b-button class="is-primary is-size-5 ml-5 continue-button-width"
-                >Edit</b-button
-              >
-              <b-button class="is-size-5 cancel-button" @click="$router.go(-1)"
+              <b-button class="is-size-5 cancel-button" v-if="isEditDetail"
                 >Cancel</b-button
               >
               <b-button
+                v-if="isEditDetail"
                 :disabled="invalid || availability === undefined"
                 class="is-primary is-size-5 ml-5 continue-button-width"
                 >Save</b-button
@@ -303,6 +319,7 @@ export default {
       password: "",
       name: "",
       email: "",
+      isEditDetail: false,
       expertise: [],
       availability: [],
       mobileNumber: "",
