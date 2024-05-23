@@ -22,17 +22,20 @@ export function apiRequestManager(
   })
     .then((res) => callback(res))
     .catch((err) => {
-      console.log(err);
-      if (err.status === 401) {
+      const error = err.response;
+
+      if (error.status === 401) {
         localStorage.removeItem("token");
         router.push({ name: "Login" });
         return;
       }
-      if (err.status === 500) {
+
+      if (error.status === 500) {
         showFailureToast("Something went wrong. Please try again later.");
         return;
       }
-      callback(err);
+
+      callback(error);
     });
 }
 

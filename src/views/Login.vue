@@ -126,10 +126,12 @@ export default {
               this.$router.push(`/admin/dashboard`);
               return;
             }
+
             if (res.status === 400) {
               showFailureToast("Username or Password validation failed");
               return;
             }
+
             if (res.status === 404) {
               showFailureToast("Admin doesn't exist");
               return;
