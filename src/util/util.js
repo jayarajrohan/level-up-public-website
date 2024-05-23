@@ -2,14 +2,13 @@ import axios from "axios";
 import router from "@/router";
 import { ToastProgrammatic as Toast } from "buefy";
 
-const BASE_URL = "https://level-up-nxxl.onrender.com/api";
+const BASE_URL = "https://level-up-pmy6.onrender.com/api";
 
 export function apiRequestManager(
   method = "get",
   url,
   data = {},
   params = {},
-  withCredentials = true,
   callback
 ) {
   axios({
@@ -17,7 +16,7 @@ export function apiRequestManager(
     url: `${BASE_URL}${url}`,
     data,
     params,
-    withCredentials,
+    withCredentials: true,
   })
     .then((res) => callback(res))
     .catch((err) => {

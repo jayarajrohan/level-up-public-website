@@ -3,7 +3,6 @@ export const dashboardChildrenRoutes = [
     name: "Dashboard",
     path: "/admin/dashboard",
     component: () => import("@/views/Admin/Dashboard.vue"),
-    meta: { requiresAuth: true },
     children: [
       {
         name: "Students",
@@ -92,7 +91,7 @@ const routes = [
     path: "/admin/dashboard-home",
     name: "Dashboard Home",
     component: () => import("@/shared/layout.vue"),
-    meta: { requiresAuth: true },
+    meta: { requiresAdmin: true },
     children: [
       ...dashboardChildrenRoutes.map((route) => {
         return {
@@ -108,7 +107,7 @@ const routes = [
     path: "/tutor",
     name: "Tutor",
     component: () => import("@/views/Tutor/Tutor.vue"),
-    meta: { requiresAuth: true },
+    meta: { requiresAdmin: false },
     children: [
       {
         name: "Tutor Viewed Students",
@@ -126,7 +125,7 @@ const routes = [
     path: "/student",
     name: "Student",
     component: () => import("@/views/Student/Student.vue"),
-    meta: { requiresAuth: true },
+    meta: { requiresAdmin: false },
     children: [
       {
         name: "Student Profile",

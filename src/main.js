@@ -35,8 +35,5 @@ Vue.component("font-awesome-icon", FontAwesomeIcon);
 
 new Vue({
   router,
-  data: {
-    role: "",
-  },
   render: (h) => h(App),
 }).$mount("#app");

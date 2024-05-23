@@ -1,5 +1,5 @@
 <template>
-  <div class="m-6" v-if="$root.role === `ADMIN`">
+  <div class="m-6">
     <div v-if="$route.name === `Dashboard`">
       <p class="has-text-primary-dark font-style-two is-size-3">
         Welcome back,

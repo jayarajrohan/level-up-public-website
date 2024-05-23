@@ -60,7 +60,7 @@ export default {
   },
   methods: {
     onLogout() {
-      apiRequestManager("get", "/admin/logout", {}, {}, true, (res) => {
+      apiRequestManager("get", "/admin/logout", {}, {}, (res) => {
         if (res.status === 200) {
           showSuccessToast("Logged out successfully");
           this.$router.push(`/`);

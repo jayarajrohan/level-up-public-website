@@ -118,11 +118,11 @@ export default {
             password: this.password,
           },
           {},
-          false,
           (res) => {
+            console.log("here");
             if (res.status === 200) {
               showSuccessToast("Login success");
-              this.$root.role = res.data.role;
+              localStorage.setItem("role", res.data.role);
               this.$router.push(`/admin/dashboard`);
               return;
             }
