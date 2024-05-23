@@ -63,6 +63,7 @@ export default {
       apiRequestManager("get", "/admin/logout", {}, {}, (res) => {
         if (res.status === 200) {
           showSuccessToast("Logged out successfully");
+          localStorage.removeItem("token");
           this.$router.push(`/`);
         }
       });

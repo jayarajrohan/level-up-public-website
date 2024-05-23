@@ -119,10 +119,10 @@ export default {
           },
           {},
           (res) => {
-            console.log("here");
             if (res.status === 200) {
               showSuccessToast("Login success");
               localStorage.setItem("role", res.data.role);
+              localStorage.setItem("token", res.data.token);
               this.$router.push(`/admin/dashboard`);
               return;
             }

@@ -2,7 +2,8 @@ import axios from "axios";
 import router from "@/router";
 import { ToastProgrammatic as Toast } from "buefy";
 
-const BASE_URL = "https://level-up-pmy6.onrender.com/api";
+// const BASE_URL = "https://level-up-pmy6.onrender.com/api";
+const BASE_URL = "http://localhost:8081/api";
 
 export function apiRequestManager(
   method = "get",
@@ -11,17 +12,19 @@ export function apiRequestManager(
   params = {},
   callback
 ) {
+  const token = localStorage.getItem("token");
   axios({
     method,
     url: `${BASE_URL}${url}`,
     data,
     params,
-    withCredentials: true,
+    headers: { Authorization: `Bearer ${token}` },
   })
     .then((res) => callback(res))
     .catch((err) => {
       console.log(err);
       if (err.status === 401) {
+        localStorage.removeItem("token");
         router.push({ name: "Login" });
         return;
       }
