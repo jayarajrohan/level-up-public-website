@@ -56,3 +56,53 @@ export function showFailureToast(message, duration = 5000) {
     type: "is-danger",
   });
 }
+
+const getTime = (time) => {
+  if (time < 10) {
+    return `0${time}`;
+  }
+
+  return `${time}`;
+};
+
+export function convertAvailabilityData(backendAvailability) {
+  const daysInWeek = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday",
+  ];
+
+  const availabilityData = daysInWeek.map((day) => {
+    const beAvailability = backendAvailability.find(
+      (bea) => bea.availableDay === day
+    );
+
+    if (beAvailability) {
+      return {
+        day,
+        value: true,
+        fromHour: getTime(beAvailability.timeRange.fromHour),
+        fromMinute: getTime(beAvailability.timeRange.fromMinute),
+        toHour: getTime(beAvailability.timeRange.toHour),
+        toMinute: getTime(beAvailability.timeRange.toMinute),
+        error: "",
+      };
+    } else {
+      return {
+        day,
+        value: false,
+        fromHour: "00",
+        fromMinute: "00",
+        toHour: "00",
+        toMinute: "00",
+        error: "",
+      };
+    }
+  });
+
+  return availabilityData;
+}

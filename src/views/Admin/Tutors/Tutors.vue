@@ -143,7 +143,6 @@ export default {
     fetchTutorDetails() {
       apiRequestManager("get", "/admin/tutors", {}, {}, (res) => {
         if (res.status === 200) {
-          console.log(res);
           this.tutorData = res.data.tutors.map((tutor) => {
             return {
               id: tutor._id,
@@ -153,6 +152,9 @@ export default {
               button: [
                 {
                   text: "View",
+                  onClick: () => {
+                    this.$router.push(`/admin/dashboard/students/edit`);
+                  },
                   icon: "",
                   type: "is-primary",
                 },

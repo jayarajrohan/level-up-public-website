@@ -104,7 +104,6 @@ export default {
     getStudentDetails() {
       const studentId = this.$route.params.studentId;
       apiRequestManager("get", `/admin/student/${studentId}`, {}, {}, (res) => {
-        console.log(res);
         if (res.status === 200) {
           this.username = res.data.student.username;
           this.studentName = res.data.student.name || "";
@@ -130,10 +129,9 @@ export default {
         },
         {},
         (res) => {
-          console.log(res);
           if (res.status === 200) {
             showSuccessToast("Student updated successfully");
-            this.$router.go(-1);
+            this.$router.push("/admin/dashboard/students");
             return;
           }
           if (res.status === 400) {

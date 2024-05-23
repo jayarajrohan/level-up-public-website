@@ -167,6 +167,9 @@ export default {
   mounted() {
     this.fetchStudentDetails();
   },
+  watch: {
+    $route: "fetchStudentDetails",
+  },
   data() {
     const studentHeader = [
       {

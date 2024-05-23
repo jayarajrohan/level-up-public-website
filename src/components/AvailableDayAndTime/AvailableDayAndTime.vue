@@ -106,7 +106,7 @@
 <script>
 export default {
   name: "AvailableDayAndTime",
-  props: ["getData"],
+  props: ["getData", "beAvailability"],
   data() {
     return {
       week: [
@@ -261,17 +261,14 @@ export default {
       this.$emit("getDetails", this.formatData());
     },
   },
+  watch: {
+    beAvailability(newValue) {
+      if (!newValue) {
+        this.week = newValue;
+      }
+    },
+  },
 };
 </script>
 
-<style>
-/* .container {
-  display: flex;
-  align-items: center;
-}
-.time-container {
-  display: flex;
-  align-items: center;
-  gap: "5px";
-} */
-</style>
+<style></style>
