@@ -7,8 +7,7 @@ export const dashboardChildrenRoutes = [
       {
         name: "Students",
         path: "/admin/dashboard/students",
-        component: () => import("@/views/Admin/Students/Students.vue"), //
-        meta: { requiresAuth: true },
+        component: () => import("@/views/Admin/Students/Students.vue"),
         childSelectableList: ["Create Student", "Edit Student"],
         children: [
           {
@@ -16,7 +15,6 @@ export const dashboardChildrenRoutes = [
             path: "/admin/dashboard/students/create",
             component: () => import("@/views/Admin/Students/CreateStudent.vue"),
             hideFromSideBar: true,
-            meta: { requiresAuth: true },
           },
 
           {
@@ -24,15 +22,13 @@ export const dashboardChildrenRoutes = [
             path: "/admin/dashboard/students/edit",
             component: () => import("@/views/Admin/Students/EditStudent.vue"),
             hideFromSideBar: true,
-            meta: { requiresAuth: true },
           },
         ],
       },
       {
         name: "Tutors",
         path: "/admin/dashboard/tutors",
-        component: () => import("@/views/Admin/Tutors/Tutors.vue"), //
-        meta: { requiresAuth: true },
+        component: () => import("@/views/Admin/Tutors/Tutors.vue"),
         childSelectableList: ["Create Tutor", "Edit Tutor"],
         children: [
           {
@@ -40,7 +36,6 @@ export const dashboardChildrenRoutes = [
             path: "/admin/dashboard/tutors/create",
             component: () => import("@/views/Admin/Tutors/CreateTutor.vue"),
             hideFromSideBar: true,
-            meta: { requiresAuth: true },
           },
 
           {
@@ -48,15 +43,13 @@ export const dashboardChildrenRoutes = [
             path: "/admin/dashboard/tutors/edit",
             component: () => import("@/views/Admin/Tutors/EditTutor.vue"),
             hideFromSideBar: true,
-            meta: { requiresAuth: true },
           },
         ],
       },
       {
         name: "Courses",
         path: "/admin/dashboard/courses",
-        component: () => import("@/views/Admin/Courses/Courses.vue"), //
-        meta: { requiresAuth: true },
+        component: () => import("@/views/Admin/Courses/Courses.vue"),
         childSelectableList: ["Create Course", "Edit Course"],
         children: [
           {
@@ -64,7 +57,6 @@ export const dashboardChildrenRoutes = [
             path: "/admin/dashboard/courses/create",
             component: () => import("@/views/Admin/Courses/CreateCourse.vue"),
             hideFromSideBar: true,
-            meta: { requiresAuth: true },
           },
 
           {
@@ -72,7 +64,6 @@ export const dashboardChildrenRoutes = [
             path: "/admin/dashboard/courses/edit",
             component: () => import("@/views/Admin/Courses/EditCourse.vue"),
             hideFromSideBar: true,
-            meta: { requiresAuth: true },
           },
         ],
       },
@@ -91,7 +82,6 @@ const routes = [
     path: "/admin/dashboard-home",
     name: "Dashboard Home",
     component: () => import("@/shared/layout.vue"),
-    meta: { requiresAdmin: true },
     children: [
       ...dashboardChildrenRoutes.map((route) => {
         return {
@@ -107,7 +97,6 @@ const routes = [
     path: "/tutor",
     name: "Tutor",
     component: () => import("@/views/Tutor/Tutor.vue"),
-    meta: { requiresAdmin: false },
     children: [
       {
         name: "Tutor Viewed Students",
@@ -125,7 +114,6 @@ const routes = [
     path: "/student",
     name: "Student",
     component: () => import("@/views/Student/Student.vue"),
-    meta: { requiresAdmin: false },
     children: [
       {
         name: "Student Profile",
@@ -147,7 +135,6 @@ const routes = [
   {
     path: "*",
     component: () => import("@/views/Login.vue"),
-    meta: { requiresAuth: true },
     redirect: "/",
   },
 ];
