@@ -2,8 +2,8 @@ import axios from "axios";
 import router from "@/router";
 import { ToastProgrammatic as Toast } from "buefy";
 
-// const BASE_URL = "https://level-up-pmy6.onrender.com/api";
-const BASE_URL = "http://localhost:8081/api";
+const BASE_URL = "https://level-up-pmy6.onrender.com/api";
+// const BASE_URL = "http://localhost:8081/api";
 
 export function apiRequestManager(
   method = "get",
