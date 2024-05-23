@@ -111,7 +111,7 @@ export default {
                   text: "Edit",
                   onClick: () => {
                     this.$router.push(
-                      `/admin/dashboard/students/edit/${student.id}`
+                      `/admin/dashboard/students/edit/${student._id}`
                     );
                   },
                   icon: "",
