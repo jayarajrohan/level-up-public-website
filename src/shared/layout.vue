@@ -8,12 +8,7 @@
         <div class="is-pulled-right mr-1">
           <div class="logo">Level-Up</div>
         </div>
-        <!-- <img
-          src="@/assets/images/graduation.webp"
-          alt="Log Out"
-          width="185px"
-          class="my-4 ml-6"
-        /> -->
+
         <div class="sec font-style-two">
           <MenuItem
             v-for="(route, index) in dashboardChildrenRoutes"
@@ -32,11 +27,7 @@
                 alt="Log Out"
                 class="cover-style"
                 width="50px"
-                @click="
-                  () => {
-                    $router.push(`/`);
-                  }
-                "
+                @click="onLogout"
               />
             </b-tooltip>
           </div>
@@ -54,6 +45,7 @@
 
 <script>
 import { dashboardChildrenRoutes } from "@/router/router.js";
+import { apiRequestManager, showSuccessToast } from "@/util/util";
 
 import MenuItem from "./menuItem.vue";
 export default {
@@ -65,6 +57,16 @@ export default {
     return {
       dashboardChildrenRoutes,
     };
+  },
+  methods: {
+    onLogout() {
+      apiRequestManager("get", "/admin/logout", {}, {}, true, (res) => {
+        if (res.status === 200) {
+          showSuccessToast("Logged out successfully");
+          this.$router.push(`/`);
+        }
+      });
+    },
   },
 };
 </script>

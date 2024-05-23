@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="$root.role === `TUTOR`">
     <router-view></router-view>
   </div>
 </template>

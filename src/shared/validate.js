@@ -28,7 +28,9 @@ extend("required", {
 //inserted value should match the regex
 extend("regex", {
   ...regex,
-  message: "Format is invalid",
+  message() {
+    return "";
+  },
 });
 
 // field should contain char
@@ -109,4 +111,25 @@ extend("email", (value) => {
   }
 
   return "Please enter valid Email ID";
+});
+
+extend("onlyAlphaNumericsAndUnderscores", {
+  validate(value) {
+    const regex = /^[a-zA-Z0-9_]*$/;
+    return regex.test(value);
+  },
+  message: (fieldName) => {
+    return `${fieldName} should only contain alphabets, numerals and underscores`;
+  },
+});
+
+extend("password", {
+  validate(value) {
+    const regex =
+      /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+~`\-={}[\]\\|:;"'<>,.?/])[A-Za-z\d!@#$%^&*()_+~`\-={}[\]\\|:;"'<>,.?/]{6,}$/;
+    return regex.test(value);
+  },
+  message: (fieldName) => {
+    return `${fieldName} should have at least one upper case letter, one lower case letter, one numeral, one special character and should be at least 6 characters long`;
+  },
 });

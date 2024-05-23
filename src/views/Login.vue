@@ -17,7 +17,7 @@
               <b-field class="mt-5">
                 <ValidationProvider
                   name="Username"
-                  :rules="{ required: true }"
+                  :rules="{ required: true, onlyAlphaNumericsAndUnderscores: true, min:5}, "
                   v-slot="{ errors }"
                 >
                   <b-input
@@ -34,7 +34,7 @@
               <b-field class="mt-5">
                 <ValidationProvider
                   name="Password"
-                  :rules="{ required: true }"
+                  :rules="{ required: true, password: true}, "
                   v-slot="{ errors }"
                 >
                   <b-input
@@ -80,11 +80,7 @@
                 :disabled="invalid"
                 expanded
                 rounded
-                @click="
-                  () => {
-                    $router.push(`/admin/dashboard`);
-                  }
-                "
+                @click="onLogin"
                 >Sign In</b-button
               >
             </div>
@@ -97,6 +93,12 @@
 
 <script>
 import "@/shared/validate.js";
+import {
+  apiRequestManager,
+  showSuccessToast,
+  showFailureToast,
+} from "@/util/util";
+
 export default {
   name: "LogIn",
   props: {
@@ -104,6 +106,38 @@ export default {
   },
   data() {
     return { password: "", role: "student", username: "" };
+  },
+  methods: {
+    onLogin() {
+      if (this.role === "admin") {
+        apiRequestManager(
+          "post",
+          "/admin/login",
+          {
+            username: this.username,
+            password: this.password,
+          },
+          {},
+          false,
+          (res) => {
+            if (res.status === 200) {
+              showSuccessToast("Login success");
+              this.$root.role = res.data.role;
+              this.$router.push(`/admin/dashboard`);
+              return;
+            }
+            if (res.status === 400) {
+              showFailureToast("Username or Password validation failed");
+              return;
+            }
+            if (res.status === 404) {
+              showFailureToast("Admin doesn't exist");
+              return;
+            }
+          }
+        );
+      }
+    },
   },
 };
 </script>
