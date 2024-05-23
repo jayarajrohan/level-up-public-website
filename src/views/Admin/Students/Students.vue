@@ -54,7 +54,7 @@
                 />
                 <p class="has-text-danger is-size-4">Delete</p>
 
-                <p>Are you sure you want to delete _________?</p>
+                <p>Are you sure you want to delete {{ deleteUserName }}?</p>
               </div>
               <div
                 class="has-text-centered mt-5"
@@ -72,7 +72,7 @@
                 <b-button
                   type="is-danger"
                   class="py-5 mr-5"
-                  @click="isModalActive = false"
+                  @click="onDeleteStudent"
                   style="width: 200px !important"
                   >Delete
                 </b-button>
@@ -90,7 +90,11 @@
 
 <script>
 import AppTable from "@/shared/appTable.vue";
-import { apiRequestManager } from "@/util/util";
+import {
+  apiRequestManager,
+  showFailureToast,
+  showSuccessToast,
+} from "@/util/util";
 export default {
   name: "StudentsView",
   components: {
@@ -120,6 +124,8 @@ export default {
                 {
                   text: "Delete",
                   onClick: () => {
+                    this.deleteUserId = student._id;
+                    this.deleteUserName = student.username;
                     this.isModalActive = true;
                   },
                   type: "is-danger",
@@ -127,18 +133,35 @@ export default {
               ],
             };
           });
-
           return;
         }
 
         if (res.status === 400) {
+          showFailureToast("Validation failed in one of the fields");
           return;
         }
 
-        if (res.status === 404) {
+        if (res.status === 409) {
+          showFailureToast("Username already exist");
           return;
         }
       });
+    },
+    onDeleteStudent() {
+      apiRequestManager(
+        "delete",
+        `/admin/student/delete/${this.deleteUserId}`,
+        {},
+        {},
+        (res) => {
+          if (res.status === 200) {
+            this.fetchStudentDetails();
+            showSuccessToast("Student deleted successfully");
+            this.isModalActive = false;
+            return;
+          }
+        }
+      );
     },
   },
   mounted() {
@@ -182,7 +205,13 @@ export default {
         sortable: false,
       },
     ];
-    return { studentData: [], studentHeader, isModalActive: false };
+    return {
+      studentData: [],
+      studentHeader,
+      isModalActive: false,
+      deleteUserId: "",
+      deleteUserName: "",
+    };
   },
 };
 </script>

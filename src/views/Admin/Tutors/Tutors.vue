@@ -90,6 +90,7 @@
 
 <script>
 import AppTable from "@/shared/appTable.vue";
+import { apiRequestManager, showFailureToast } from "@/util/util";
 export default {
   name: "TutorsView",
   components: {
@@ -105,26 +106,28 @@ export default {
         sortable: true,
       },
       {
+        field: "userName",
+        label: "Username",
+        tableHeaderAttributes: this.paymentHeadShow,
+        tableDataAttributes: this.columnTdAttrs,
+        sortable: true,
+      },
+      {
         field: "name",
         label: "Name",
         tableHeaderAttributes: this.paymentHeadShow,
         tableDataAttributes: this.columnTdAttrs,
         sortable: true,
       },
+
       {
-        field: "expertise",
-        label: "Expertise",
+        field: "email",
+        label: "Email",
         tableHeaderAttributes: this.paymentHeadShow,
         tableDataAttributes: this.columnTdAttrs,
         sortable: true,
       },
-      {
-        field: "availability",
-        label: "Availability",
-        tableHeaderAttributes: this.paymentHeadShow,
-        tableDataAttributes: this.columnTdAttrs,
-        sortable: true,
-      },
+
       {
         field: "button",
         label: "Action",
@@ -133,55 +136,61 @@ export default {
         sortable: false,
       },
     ];
-    const tutorData = [
-      {
-        id: 0,
-        name: "Rohan",
-        expertise: "IT",
-        availability: "Sunday",
-        button: [
-          {
-            text: "Edit",
-            onClick: () => {
-              this.$router.push(`/admin/dashboard/tutors/edit`);
-            },
-            icon: "",
-            type: "is-primary",
-          },
-          {
-            text: "Delete",
-            onClick: () => {
-              this.isModalActive = true;
-            },
-            type: "is-danger",
-          },
-        ],
-      },
-      {
-        id: 1,
-        name: "Sarmisha",
-        expertise: "Maths",
-        availability: "Saturday ",
-        button: [
-          {
-            text: "Edit",
-            onClick: () => {
-              this.$router.push(`/admin/dashboard/tutors/edit`);
-            },
-            icon: "",
-            type: "is-primary",
-          },
-          {
-            text: "Delete",
-            onClick: () => {
-              this.isModalActive = true;
-            },
-            type: "is-danger",
-          },
-        ],
-      },
-    ];
-    return { tutorHeader, tutorData, isModalActive: false };
+
+    return { tutorHeader, tutorData: [], isModalActive: false };
+  },
+  methods: {
+    fetchTutorDetails() {
+      apiRequestManager("get", "/admin/tutors", {}, {}, (res) => {
+        if (res.status === 200) {
+          console.log(res);
+          this.tutorData = res.data.tutors.map((tutor) => {
+            return {
+              id: tutor._id,
+              userName: tutor.username,
+              email: tutor.email || "",
+              name: tutor.name || "",
+              button: [
+                {
+                  text: "View",
+                  icon: "",
+                  type: "is-primary",
+                },
+                {
+                  text: "Edit",
+                  onClick: () => {
+                    this.$router.push(`/admin/dashboard/students/edit`);
+                  },
+                  icon: "",
+                  type: "is-primary",
+                },
+                {
+                  text: "Delete",
+                  onClick: () => {
+                    this.isModalActive = true;
+                  },
+                  type: "is-danger",
+                },
+              ],
+            };
+          });
+          return;
+        }
+
+        if (res.status === 400) {
+          showFailureToast("Validation failed in one of the fields");
+          return;
+        }
+
+        if (res.status === 409) {
+          showFailureToast("Username already exist");
+          return;
+        }
+      });
+    },
+  },
+  mounted() {
+    this.fetchTutorDetails();
   },
 };
 </script>
