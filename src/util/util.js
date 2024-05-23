@@ -26,7 +26,7 @@ export function apiRequestManager(
 
       if (error.status === 401) {
         localStorage.removeItem("token");
-        router.push({ name: "Login" });
+        router.push({ name: "Login" }).catch(() => []);
         return;
       }
 

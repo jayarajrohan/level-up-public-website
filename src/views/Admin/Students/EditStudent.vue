@@ -104,6 +104,14 @@ export default {
   data() {
     return { password: "", studentEmail: "", username: "", studentName: "" };
   },
+  methods: {
+    getStudentDetails() {
+      console.log(this.$route.params.studentId);
+    },
+  },
+  mounted() {
+    this.getStudentDetails();
+  },
 };
 </script>
 

@@ -90,10 +90,59 @@
 
 <script>
 import AppTable from "@/shared/appTable.vue";
+import { apiRequestManager } from "@/util/util";
 export default {
   name: "StudentsView",
   components: {
     AppTable,
+  },
+  methods: {
+    fetchStudentDetails() {
+      apiRequestManager("get", "/admin/students", {}, {}, (res) => {
+        if (res.status === 200) {
+          this.studentData = res.data.students.map((student) => {
+            return {
+              id: student._id,
+              userName: student.username,
+              email: student.email || "",
+              name: student.name || "",
+              button: [
+                {
+                  text: "Edit",
+                  onClick: () => {
+                    this.$router.push(
+                      `/admin/dashboard/students/edit/${student.id}`
+                    );
+                  },
+                  icon: "",
+                  type: "is-primary",
+                },
+                {
+                  text: "Delete",
+                  onClick: () => {
+                    this.isModalActive = true;
+                  },
+                  type: "is-danger",
+                },
+              ],
+            };
+          });
+
+          return;
+        }
+
+        if (res.status === 400) {
+          return;
+        }
+
+        if (res.status === 404) {
+          return;
+        }
+      });
+    },
+  },
+  mounted() {
+    this.fetchStudentDetails();
   },
   data() {
     const studentHeader = [
@@ -107,6 +156,13 @@ export default {
       {
         field: "userName",
         label: "User Name",
+        tableHeaderAttributes: this.paymentHeadShow,
+        tableDataAttributes: this.columnTdAttrs,
+        sortable: true,
+      },
+      {
+        field: "name",
+        label: "Name",
         tableHeaderAttributes: this.paymentHeadShow,
         tableDataAttributes: this.columnTdAttrs,
         sortable: true,
@@ -126,98 +182,7 @@ export default {
         sortable: false,
       },
     ];
-    const studentData = [
-      {
-        id: 0,
-        userName: "Sarmisha",
-        email: "sarmi@gmail.com",
-        button: [
-          {
-            text: "Edit",
-            onClick: () => {
-              this.$router.push(`/admin/dashboard/students/edit`);
-            },
-            icon: "",
-            type: "is-primary",
-          },
-          {
-            text: "Delete",
-            onClick: () => {
-              this.isModalActive = true;
-            },
-            type: "is-danger",
-          },
-        ],
-      },
-      {
-        id: 1,
-        userName: "Rohan",
-        email: "rohan@gmail.com",
-        button: [
-          {
-            text: "Edit",
-            onClick: () => {
-              this.$router.push(`/admin/dashboard/students/edit`);
-            },
-            icon: "",
-            type: "is-primary",
-          },
-          {
-            text: "Delete",
-            onClick: () => {
-              this.isModalActive = true;
-            },
-
-            type: "is-danger",
-          },
-        ],
-      },
-      {
-        id: 2,
-        userName: "Renota",
-        email: "renota@gmail.com",
-        button: [
-          {
-            text: "Edit",
-            onClick: () => {
-              this.$router.push(`/admin/dashboard/students/edit`);
-            },
-            icon: "",
-            type: "is-primary",
-          },
-          {
-            text: "Delete",
-            onClick: () => {
-              this.isModalActive = true;
-            },
-            type: "is-danger",
-          },
-        ],
-      },
-      {
-        id: 3,
-        userName: "Jeevan",
-        email: "jeevan@gmail.com",
-        button: [
-          {
-            text: "Edit",
-            onClick: () => {
-              this.$router.push(`/admin/dashboard/students/edit`);
-            },
-            icon: "",
-            type: "is-primary",
-          },
-          {
-            text: "Delete",
-            onClick: () => {
-              this.isModalActive = true;
-            },
-            type: "is-danger",
-          },
-        ],
-      },
-    ];
-    return { studentData, studentHeader, isModalActive: false };
+    return { studentData: [], studentHeader, isModalActive: false };
   },
 };
 </script>

@@ -19,7 +19,7 @@ export const dashboardChildrenRoutes = [
 
           {
             name: "Edit Student",
-            path: "/admin/dashboard/students/edit",
+            path: "/admin/dashboard/students/edit/:studentId",
             component: () => import("@/views/Admin/Students/EditStudent.vue"),
             hideFromSideBar: true,
           },
