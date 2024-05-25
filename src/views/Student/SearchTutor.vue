@@ -25,11 +25,7 @@ div
             alt="Log Out"
             class="cover-style"
             width="50px"
-            @click="
-              () => {
-                $router.push(`/`);
-              }
-            "
+            @click="onLogout"
           />
         </b-tooltip>
       </div>
@@ -48,6 +44,7 @@ div
               <b-button
                 :disabled="invalid"
                 class="is-primary is-size-5 ml-5 continue-button-width"
+                @click="onSearchTutor"
                 >Search</b-button
               >
             </div>
@@ -58,12 +55,12 @@ div
             <div class="mt-2">
               <div class="columns expertise-list">
                 <div
-                  v-for="(entry, entryIndex) in expertiseList"
-                  :key="entryIndex"
+                  v-for="expertiseItem in expertiseList"
+                  :key="expertiseItem.id"
                   class="expertise-item-list"
                 >
-                  <b-checkbox v-model="courses" :native-value="courses">
-                    {{ entry }}
+                  <b-checkbox v-model="courses" :native-value="expertiseItem">
+                    {{ expertiseItem.name }}
                   </b-checkbox>
                 </div>
               </div>
@@ -81,7 +78,16 @@ div
               />
             </div>
           </div>
-          <div class="mt-4 mx-4">
+          <div
+            class="mt-4 mx-4"
+            v-if="tutorData.length === 0 && isSearchClicked"
+          >
+            <b-message type="is-danger" has-icon class="mt-4 is-size-5">
+              There aren't any tutors available for the filters you applied.
+              Please modify filters and try again
+            </b-message>
+          </div>
+          <div class="mt-4 mx-4" v-if="tutorData.length !== 0">
             <AppTable
               :data="tutorData"
               :columns="tutorHeader"
@@ -98,6 +104,7 @@ div
 import "@/shared/validate.js";
 import AppTable from "@/shared/appTable.vue";
 import AvailableDayAndTime from "@/components/AvailableDayAndTime/AvailableDayAndTime.vue";
+import { apiRequestManager, showSuccessToast } from "@/util/util";
 export default {
   name: "FindTutor",
   components: {
@@ -135,44 +142,77 @@ export default {
         sortable: false,
       },
     ];
-    const tutorData = [
-      {
-        id: 0,
-        username: "Sarmi1106",
-        name: "Sarmisha",
-        email: "sarmisha@gmail.com",
-        button: [
-          {
-            text: "View",
-            onClick: () => {
-              this.$router.push(`/student/tutor-details`);
-            },
-            icon: "",
-            type: "is-primary",
-          },
-        ],
-      },
-    ];
+
     return {
-      expertiseList: [
-        "Course 1",
-        "Course 2",
-        "Course 3",
-        "Course 4",
-        "Course 5",
-        "Course 6",
-        "Course 7",
-        "Course 8",
-      ],
+      expertiseList: [],
       courses: [],
       tutorHeader,
-      tutorData,
+      tutorData: [],
+      availability: [],
+      isSearchClicked: false,
     };
   },
   methods: {
     availabilityDetail(value) {
       this.availability = value;
     },
+    onLogout() {
+      apiRequestManager("get", "/student/logout", {}, {}, (res) => {
+        if (res.status === 200) {
+          showSuccessToast("Logged out successfully");
+          localStorage.removeItem("token");
+          this.$router.push(`/`);
+        }
+      });
+    },
+    onSearchTutor() {
+      apiRequestManager(
+        "post",
+        "/student/find-tutors",
+        {
+          courses: this.courses,
+          availability: this.availability || [],
+        },
+        {},
+        (res) => {
+          this.isSearchClicked = true;
+          if (res.status === 200) {
+            this.tutorData = res.data.tutors.map((tutor) => {
+              return {
+                id: tutor._id,
+                username: tutor.username,
+                email: tutor.email || "",
+                name: tutor.name || "",
+                button: [
+                  {
+                    text: "View",
+                    onClick: () => {
+                      this.$router.push(`/student/tutor-details/${tutor._id}`);
+                    },
+                    icon: "",
+                    type: "is-primary",
+                  },
+                ],
+              };
+            });
+            return;
+          }
+        }
+      );
+    },
+    fetchCourses() {
+      apiRequestManager("get", "/student/courses", {}, {}, (res) => {
+        if (res.status === 200) {
+          this.expertiseList = res.data.courses.map((course) => {
+            return { name: course.courseName, id: course._id };
+          });
+          return;
+        }
+      });
+    },
+  },
+  mounted() {
+    this.fetchCourses();
   },
 };
 </script>

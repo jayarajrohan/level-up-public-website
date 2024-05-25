@@ -258,7 +258,14 @@ div
                 <div class="column"></div>
               </div>
             </div>
-
+            <div class="mt-4">
+              <p
+                class="has-text-danger is-underlined is-size-5 pointer-style"
+                @click="isChangePassword = true"
+              >
+                Change password
+              </p>
+            </div>
             <div class="is-pulled-right my-4">
               <b-button
                 class="is-size-5 cancel-button"
@@ -284,6 +291,146 @@ div
           </div>
         </form></ValidationObserver
       >
+      <b-modal
+        v-model="isChangePassword"
+        scroll="keep"
+        :width="540"
+        :can-cancel="false"
+      >
+        <div class="model_box mt-3 mx-2">
+          <div style="transition-timing-function: ease-in-out">
+            <div class="modal-close-button is-pulled-right mb-6">
+              <button
+                class="delete"
+                aria-label="close"
+                @click="
+                  () => {
+                    currentPassword = ``;
+                    confirmNewPassword = ``;
+                    newPassword = ``;
+                    isChangePassword = false;
+                  }
+                "
+              ></button>
+            </div>
+            <ValidationObserver v-slot="{ invalid }">
+              <form @submit.prevent="">
+                <div>
+                  <p class="has-text-danger is-size-4 has-text-centered">
+                    Change Password
+                  </p>
+                  <div class="mt-4">
+                    <label
+                      >Current password<span class="has-text-danger ml-1"
+                        >*</span
+                      ></label
+                    >
+                    <b-field>
+                      <ValidationProvider
+                        name="Password"
+                        :rules="{ required: true, password: true}, "
+                        v-slot="{ errors }"
+                      >
+                        <b-input
+                          type="password"
+                          v-model="currentPassword"
+                          placeholder="Enter password"
+                        />
+                        <span class="has-text-danger error-massage">{{
+                          errors[0]
+                        }}</span>
+                      </ValidationProvider>
+                    </b-field>
+                  </div>
+
+                  <div class="mt-4">
+                    <label
+                      >New password<span class="has-text-danger ml-1"
+                        >*</span
+                      ></label
+                    >
+                    <b-field>
+                      <ValidationProvider
+                        name="Password"
+                        :rules="{ required: true, password: true}, "
+                        v-slot="{ errors }"
+                      >
+                        <b-input
+                          type="password"
+                          v-model="newPassword"
+                          placeholder="Enter password"
+                        />
+                        <span class="has-text-danger error-massage">{{
+                          errors[0]
+                        }}</span>
+                      </ValidationProvider>
+                    </b-field>
+                  </div>
+                  <div class="mt-4">
+                    <label
+                      >Confirm new password<span class="has-text-danger ml-1"
+                        >*</span
+                      ></label
+                    >
+                    <b-field>
+                      <ValidationProvider
+                        name="Password"
+                        :rules="{ required: true, password: true}, "
+                        v-slot="{ errors }"
+                      >
+                        <b-input
+                          type="password"
+                          v-model="confirmNewPassword"
+                          placeholder="Confirm password"
+                        />
+                        <span class="has-text-danger error-massage">{{
+                          errors[0]
+                        }}</span>
+                        <span
+                          class="has-text-danger error-massage"
+                          v-if="
+                            newPassword !== confirmNewPassword && !errors[0]
+                          "
+                          >Password does't match</span
+                        >
+                      </ValidationProvider>
+                    </b-field>
+                  </div>
+                </div>
+                <div
+                  class="has-text-centered mt-5"
+                  style="transition-timing-function: ease-in-out"
+                >
+                  <b-button
+                    class="py-5 mr-5"
+                    @click="
+                      () => {
+                        currentPassword = ``;
+                        confirmNewPassword = ``;
+                        newPassword = ``;
+                        isChangePassword = false;
+                      }
+                    "
+                    style="
+                      width: 200px !important;
+                      background-color: rgba(224, 225, 225, 1);
+                    "
+                    >Cancel
+                  </b-button>
+                  <b-button
+                    type="is-danger"
+                    class="py-5 mr-5"
+                    :disabled="invalid || newPassword !== confirmNewPassword"
+                    @click="onChangePassword"
+                    style="width: 200px !important"
+                    >Save
+                  </b-button>
+                </div>
+              </form>
+            </ValidationObserver>
+          </div>
+        </div>
+      </b-modal>
     </div>
   </div>
 </template>
@@ -302,6 +449,10 @@ export default {
   name: "EditTutorsView",
   data() {
     return {
+      isChangePassword: false,
+      currentPassword: "",
+      confirmNewPassword: "",
+      newPassword: "",
       expertiseListOne: [],
       expertiseListTwo: [],
       username: "",
@@ -409,6 +560,33 @@ export default {
           }
           if (res.status === 409) {
             showFailureToast("Username already exist");
+            return;
+          }
+        }
+      );
+    },
+    onChangePassword() {
+      apiRequestManager(
+        "put",
+        "/tutor/update-password",
+        { password: this.newPassword, currentPassword: this.currentPassword },
+        {},
+        (res) => {
+          if (res.status === 200) {
+            showSuccessToast("Tutor password updated successfully");
+            this.confirmNewPassword = "";
+            this.currentPassword = "";
+            this.newPassword = "";
+            this.isChangePassword = false;
+            return;
+          }
+
+          if (res.status === 404) {
+            showFailureToast("Tutor doesn't exist");
+            return;
+          }
+          if (res.status === 422) {
+            showFailureToast("Current password is wrong");
             return;
           }
         }

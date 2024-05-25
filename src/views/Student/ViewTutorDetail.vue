@@ -54,7 +54,7 @@
                 <b-input
                   type="text"
                   v-model="username"
-                  readonly="!isEditDetail"
+                  readonly
                   placeholder="Enter user name"
                 /><span class="has-text-danger error-massage">{{
                   errors[0]
@@ -62,26 +62,7 @@
               </ValidationProvider>
             </b-field>
           </div>
-          <div class="column">
-            <label>Password<span class="has-text-danger ml-1">*</span></label>
-            <b-field>
-              <ValidationProvider
-                name="Password"
-                :rules="{ required: true }"
-                v-slot="{ errors }"
-              >
-                <b-input
-                  type="text"
-                  readonly="!isEditDetail"
-                  v-model="password"
-                  placeholder="Enter password"
-                />
-                <span class="has-text-danger error-massage">{{
-                  errors[0]
-                }}</span>
-              </ValidationProvider>
-            </b-field>
-          </div>
+          <div class="column"></div>
         </div>
         <div class="mt-4">
           <div class="columns">
@@ -91,7 +72,7 @@
                 <b-input
                   type="text"
                   v-model="name"
-                  readonly="!isEditDetail"
+                  readonly
                   placeholder="Enter name"
                 />
               </b-field>
@@ -106,7 +87,7 @@
                 >
                   <b-input
                     type="text"
-                    readonly="!isEditDetail"
+                    readonly
                     v-model="email"
                     placeholder="Enter email"
                   />
@@ -146,75 +127,111 @@
                   availabilityDetail(value);
                 }
               "
+              :beAvailability="beAvailability"
+              :readonly="true"
             />
           </div>
         </div>
-        <div class="mt-4">
+        <div class="mt-6">
           <div class="columns">
-            <div class="column mr-6">
+            <div class="column mr-6" v-if="mobileNumber || whatsAppNumber">
               <p class="font-size-one font-color-one">Contact Details</p>
-              <div class="mt-3">
+              <div class="mt-3" v-if="mobileNumber">
                 <div class="columns is-vcentered">
                   <div class="column is-narrow mr-4 pointer-style">
-                    <font-awesome-icon
-                      :icon="['fas', 'phone']"
-                      style="font-size: 22px"
-                    />
+                    <a :href="`tel:+94${mobileNumber}`" target="_blank">
+                      <font-awesome-icon
+                        :icon="['fas', 'phone']"
+                        style="font-size: 22px"
+                      />
+                    </a>
                   </div>
                   <div class="column is-size-5 is-narrow pointer-style">
-                    {{ mobileNumber }}
+                    <a :href="`tel:+94${mobileNumber}`" target="_blank">
+                      {{ mobileNumber }}
+                    </a>
                   </div>
                 </div>
               </div>
-              <div class="my-4">
+              <div class="my-4" v-if="whatsAppNumber">
                 <div class="columns is-vcentered">
                   <div class="column is-narrow mr-4 pointer-style">
-                    <font-awesome-icon
-                      :icon="['fab', 'whatsapp']"
-                      style="font-size: 30px; color: #075e54"
-                    />
+                    <a
+                      :href="`https://wa.me/+94${whatsAppNumber}`"
+                      target="_blank"
+                    >
+                      <font-awesome-icon
+                        :icon="['fab', 'whatsapp']"
+                        style="font-size: 30px; color: #075e54"
+                      />
+                    </a>
                   </div>
                   <div class="column is-size-5 pointer-style">
-                    {{ whatsAppNumber }}
+                    <a
+                      :href="`https://wa.me/+94${whatsAppNumber}`"
+                      target="_blank"
+                      >{{ whatsAppNumber }}</a
+                    >
                   </div>
                 </div>
               </div>
             </div>
-            <div class="column ml-6">
+            <div
+              class="column ml-6"
+              v-if="facebook || twitter || linkedIn || youtube"
+            >
               <p class="font-size-one font-color-one">Social Media Details</p>
               <div class="mt-3">
                 <div class="columns">
-                  <div class="column is-narrow mr-4 pointer-style">
-                    <font-awesome-icon
-                      :icon="['fab', 'facebook']"
-                      style="font-size: 40px; color: #1877f2"
-                    />
+                  <div
+                    class="column is-narrow mr-4 pointer-style"
+                    v-if="facebook"
+                  >
+                    <a :href="facebook" target="_blank">
+                      <font-awesome-icon
+                        :icon="['fab', 'facebook']"
+                        style="font-size: 40px; color: #1877f2"
+                    /></a>
                   </div>
-                  <div class="column is-narrow mr-4 pointer-style">
-                    <font-awesome-icon
-                      :icon="['fab', 'twitter']"
-                      style="font-size: 40px; color: #1da1f2"
-                    />
+                  <div
+                    class="column is-narrow mr-4 pointer-style"
+                    v-if="twitter"
+                  >
+                    <a :href="twitter" target="_blank"
+                      ><font-awesome-icon
+                        :icon="['fab', 'twitter']"
+                        style="font-size: 40px; color: #1da1f2"
+                    /></a>
                   </div>
-                  <div class="column is-narrow mr-4 pointer-style">
-                    <font-awesome-icon
-                      :icon="['fab', 'youtube']"
-                      style="font-size: 40px; color: #ff0000"
-                    />
+                  <div
+                    class="column is-narrow mr-4 pointer-style"
+                    v-if="linkedIn"
+                  >
+                    <a :href="linkedIn" target="_blank">
+                      <font-awesome-icon
+                        :icon="['fab', 'youtube']"
+                        style="font-size: 40px; color: #ff0000"
+                    /></a>
                   </div>
-                  <div class="column is-narrow mr-4 pointer-style">
-                    <font-awesome-icon
-                      :icon="['fab', 'linkedin']"
-                      style="font-size: 40px; color: #0a66c2"
-                    />
+                  <div
+                    class="column is-narrow mr-4 pointer-style"
+                    v-if="youtube"
+                  >
+                    <a :href="youtube" target="_blank">
+                      <font-awesome-icon
+                        :icon="['fab', 'linkedin']"
+                        style="font-size: 40px; color: #0a66c2"
+                    /></a>
                   </div>
-                  <!-- <div class="column is-narrow mr-4">
-                    <font-awesome-icon :icon="['fas', 'user']" />
-                  </div> -->
                 </div>
               </div>
             </div>
           </div>
+        </div>
+        <div class="is-pulled-right my-4">
+          <b-button class="is-size-5 cancel-button" @click="$router.go(-1)"
+            >Back</b-button
+          >
         </div>
       </div>
     </div>
@@ -224,25 +241,55 @@
 <script>
 import "@/shared/validate.js";
 import AvailableDayAndTime from "@/components/AvailableDayAndTime/AvailableDayAndTime.vue";
+import { apiRequestManager, convertAvailabilityData } from "@/util/util";
 export default {
   name: "FindTutor",
   components: { AvailableDayAndTime },
   data() {
     return {
-      expertiseList: [
-        "Course 1",
-        "Course 2",
-        "Course 3",
-        "Course 4",
-        "Course 5",
-        "Course 6",
-        "Course 7",
-        "Course 8",
-      ],
-      courses: [],
-      mobileNumber: "0710719455",
-      whatsAppNumber: "0724926255",
+      username: "",
+      name: "",
+      email: "",
+      expertiseList: "",
+      mobileNumber: "",
+      whatsAppNumber: "",
+      facebook: "",
+      twitter: "",
+      linkedIn: "",
+      youtube: "",
+      beAvailability: [],
     };
+  },
+  methods: {
+    fetchTutorDetails() {
+      const tutorId = this.$route.params.tutorId;
+      apiRequestManager(
+        "get",
+        `/student/view-tutor/${tutorId}`,
+        {},
+        {},
+        (res) => {
+          if (res.status === 200) {
+            const tutor = res.data.tutor;
+            this.username = tutor.username;
+            this.name = tutor.name || "";
+            this.email = tutor.email || "";
+            this.expertiseList = tutor.expertise || [];
+            this.mobileNumber = tutor.contactDetails?.mobileNumber || "";
+            this.whatsAppNumber = tutor.contactDetails?.whatsAppNumber || "";
+            this.facebook = tutor.contactDetails?.socialMedia?.facebook || "";
+            this.twitter = tutor.contactDetails?.socialMedia?.twitter || "";
+            this.linkedIn = tutor.contactDetails?.socialMedia?.linkedIn || "";
+            this.youtube = tutor.contactDetails?.socialMedia?.youtube || "";
+            this.beAvailability = convertAvailabilityData(tutor.availability);
+            return;
+          }
+        }
+      );
+    },
+  },
+  mounted() {
+    this.fetchTutorDetails();
   },
 };
 </script>

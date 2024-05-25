@@ -134,7 +134,7 @@ const routes = [
       },
       {
         name: "Student Tutor View",
-        path: "/student/tutor-details",
+        path: "/student/tutor-details/:tutorId",
         component: () => import("@/views/Student/ViewTutorDetail.vue"),
       },
     ],
