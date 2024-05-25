@@ -230,13 +230,27 @@ div
                 <div class="column is-10 mr-4">
                   <label>Expertise</label>
                   <div class="mx-3 mt-2">
-                    <div class="columns expertise-list">
+                    <div class="columns expertise-list" v-if="!isEditDetail">
                       <div
                         v-for="(entry, entryIndex) in expertiseListOne"
                         :key="entryIndex"
                         class="expertise-item-list"
                       >
                         <span class="has-text-danger">* </span>{{ entry }}
+                      </div>
+                    </div>
+                    <div class="columns expertise-list" v-if="isEditDetail">
+                      <div
+                        v-for="expertiseItem in expertiseListTwo"
+                        :key="expertiseItem.id"
+                        class="expertise-item-list"
+                      >
+                        <b-checkbox
+                          v-model="expertise"
+                          :native-value="expertiseItem"
+                        >
+                          {{ expertiseItem.name }}
+                        </b-checkbox>
                       </div>
                     </div>
                   </div>
@@ -253,13 +267,17 @@ div
                 >Back</b-button
               >
 
-              <b-button class="is-size-5 cancel-button" v-if="isEditDetail"
+              <b-button
+                class="is-size-5 cancel-button"
+                v-if="isEditDetail"
+                @click="fetchTutorDetails"
                 >Cancel</b-button
               >
               <b-button
                 v-if="isEditDetail"
-                :disabled="invalid || availability === undefined"
+                :disabled="invalid"
                 class="is-primary is-size-5 ml-5 continue-button-width"
+                @click="onEditTutor"
                 >Save</b-button
               >
             </div>
@@ -275,6 +293,7 @@ import "@/shared/validate.js";
 import AvailableDayAndTime from "@/components/AvailableDayAndTime/AvailableDayAndTime.vue";
 import {
   apiRequestManager,
+  showSuccessToast,
   showFailureToast,
   convertAvailabilityData,
 } from "@/util/util";
@@ -286,7 +305,6 @@ export default {
       expertiseListOne: [],
       expertiseListTwo: [],
       username: "",
-      password: "",
       name: "",
       email: "",
       isEditDetail: false,
@@ -309,38 +327,92 @@ export default {
       this.availability = value;
     },
     fetchTutorDetails() {
-      apiRequestManager("get", "/tutor/profile", {}, {}, (res) => {
+      apiRequestManager("get", "/tutor/courses", {}, {}, (res) => {
         if (res.status === 200) {
-          const tutor = res.data.tutor;
-          this.username = tutor.username;
-          this.name = tutor.name || "";
-          this.email = tutor.email || "";
-          this.expertiseListOne = tutor.expertise || [];
-          this.expertiseListTwo = tutor.expertise
-            ? this.expertiseList.filter((expertiseItem) =>
-                tutor.expertise.includes(expertiseItem.name)
-              )
-            : [];
-          this.mobileNumber = tutor.contactDetails?.mobileNumber || "";
-          this.whatsAppNumber = tutor.contactDetails?.whatsAppNumber || "";
-          this.facebook = tutor.contactDetails?.socialMedia?.facebook || "";
-          this.twitter = tutor.contactDetails?.socialMedia?.twitter || "";
-          this.linkedIn = tutor.contactDetails?.socialMedia?.linkedIn || "";
-          this.youtube = tutor.contactDetails?.socialMedia?.youtube || "";
-          this.beAvailability = convertAvailabilityData(tutor.availability);
-          return;
-        }
+          this.expertiseListTwo = res.data.courses.map((course) => {
+            return { name: course.courseName, id: course._id };
+          });
 
-        if (res.status === 400) {
-          showFailureToast("Validation failed in one of the fields");
-          return;
-        }
+          apiRequestManager("get", "/tutor/profile", {}, {}, (res) => {
+            if (res.status === 200) {
+              const tutor = res.data.tutor;
+              this.username = tutor.username;
+              this.name = tutor.name || "";
+              this.email = tutor.email || "";
+              this.expertiseListOne = tutor.expertise || [];
+              this.expertise = tutor.expertise
+                ? this.expertiseListTwo.filter((expertiseItem) =>
+                    tutor.expertise.includes(expertiseItem.name)
+                  )
+                : [];
+              this.mobileNumber = tutor.contactDetails?.mobileNumber || "";
+              this.whatsAppNumber = tutor.contactDetails?.whatsAppNumber || "";
+              this.facebook = tutor.contactDetails?.socialMedia?.facebook || "";
+              this.twitter = tutor.contactDetails?.socialMedia?.twitter || "";
+              this.linkedIn = tutor.contactDetails?.socialMedia?.linkedIn || "";
+              this.youtube = tutor.contactDetails?.socialMedia?.youtube || "";
+              this.beAvailability = convertAvailabilityData(tutor.availability);
+              this.isEditDetail = false;
+              return;
+            }
 
-        if (res.status === 409) {
-          showFailureToast("Username already exist");
-          return;
+            if (res.status === 400) {
+              showFailureToast("Validation failed in one of the fields");
+              return;
+            }
+
+            if (res.status === 409) {
+              showFailureToast("Username already exist");
+              return;
+            }
+          });
         }
       });
+    },
+    onEditTutor() {
+      apiRequestManager(
+        "put",
+        `/tutor/update`,
+        {
+          username: this.username,
+          name: this.name,
+          email: this.email,
+          expertise: this.expertise.map((expertiseItem) => {
+            return expertiseItem.name;
+          }),
+          availability: this.availability || [],
+          contactDetails: {
+            mobileNumber: this.mobileNumber,
+            whatsAppNumber: this.whatsAppNumber,
+            socialMedia: {
+              facebook: this.facebook,
+              twitter: this.twitter,
+              linkedIn: this.linkedIn,
+              youtube: this.youtube,
+            },
+          },
+        },
+        {},
+        (res) => {
+          if (res.status === 200) {
+            showSuccessToast("Profile updated successfully");
+            this.fetchTutorDetails();
+            return;
+          }
+          if (res.status === 400) {
+            showFailureToast("Validation failed in one of the fields");
+            return;
+          }
+          if (res.status === 404) {
+            showFailureToast("Tutor doesn't exist");
+            return;
+          }
+          if (res.status === 409) {
+            showFailureToast("Username already exist");
+            return;
+          }
+        }
+      );
     },
   },
   mounted() {
