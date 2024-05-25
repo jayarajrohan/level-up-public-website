@@ -2,7 +2,7 @@
   <div class="mx-5 my-3">
     <p class="has-text-primary is-size-4">Create Student</p>
     <ValidationObserver v-slot="{ invalid }">
-      <form @submit.prevent="">
+      <form @submit.prevent="" autocomplete="off">
         <div class="mt-4 mx-4">
           <div class="columns">
             <div class="column mr-4">
@@ -26,24 +26,58 @@
                 </ValidationProvider>
               </b-field>
             </div>
-            <div class="column">
-              <label>Password<span class="has-text-danger ml-1">*</span></label>
-              <b-field>
-                <ValidationProvider
-                  name="Password"
-                  :rules="{ required: true, password: true}, "
-                  v-slot="{ errors }"
+          </div>
+          <div class="mt-4">
+            <div class="columns">
+              <div class="column mr-4">
+                <label
+                  >Password<span class="has-text-danger ml-1">*</span></label
                 >
-                  <b-input
-                    type="text"
-                    v-model="password"
-                    placeholder="Enter password"
-                  />
-                  <span class="has-text-danger error-massage">{{
-                    errors[0]
-                  }}</span>
-                </ValidationProvider>
-              </b-field>
+                <b-field>
+                  <ValidationProvider
+                    name="Password"
+                    :rules="{ required: true, password: true}, "
+                    v-slot="{ errors }"
+                  >
+                    <b-input
+                      type="password"
+                      v-model="password"
+                      placeholder="Enter password"
+                    />
+                    <span class="has-text-danger error-massage">{{
+                      errors[0]
+                    }}</span>
+                  </ValidationProvider>
+                </b-field>
+              </div>
+              <div class="column">
+                <label
+                  >Confirm password<span class="has-text-danger ml-1"
+                    >*</span
+                  ></label
+                >
+                <b-field>
+                  <ValidationProvider
+                    name="Password"
+                    :rules="{ required: true, password: true}, "
+                    v-slot="{ errors }"
+                  >
+                    <b-input
+                      type="password"
+                      v-model="confirmPassword"
+                      placeholder="Confirm password"
+                    />
+                    <span class="has-text-danger error-massage">{{
+                      errors[0]
+                    }}</span>
+                    <span
+                      class="has-text-danger error-massage"
+                      v-if="password !== confirmPassword && !errors[0]"
+                      >Password does't match</span
+                    >
+                  </ValidationProvider>
+                </b-field>
+              </div>
             </div>
           </div>
           <div class="mt-4">
@@ -52,7 +86,7 @@
                 <label>Name</label>
                 <b-field>
                   <ValidationProvider
-                    name="Username"
+                    name="Name"
                     :rules="{ min:3}, "
                     v-slot="{ errors }"
                   >
@@ -95,7 +129,7 @@
 
             <b-button
               class="is-primary is-size-5 ml-5 continue-button-width"
-              :disabled="invalid"
+              :disabled="invalid || password !== confirmPassword"
               @click="onCreateStudent"
               >Create Student</b-button
             >
@@ -117,7 +151,13 @@ import {
 export default {
   name: "CreateStudentsView",
   data() {
-    return { password: "", studentEmail: "", username: "", studentName: "" };
+    return {
+      password: "",
+      studentEmail: "",
+      username: "",
+      studentName: "",
+      confirmPassword: "",
+    };
   },
   methods: {
     onCreateStudent() {

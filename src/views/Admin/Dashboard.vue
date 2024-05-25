@@ -8,7 +8,9 @@
         <div class="column is-narrow">
           <img src="@/assets/images/calender.webp" alt="calender" />
         </div>
-        <div class="column ml-2 font-style-two">11-05-2024</div>
+        <div class="column ml-2 font-style-two">
+          {{ moment().format("DD-MM-YYYY") }}
+        </div>
       </div>
       <div class="mt-6">
         <div class="columns">
@@ -40,7 +42,13 @@
 </template>
 
 <script>
-export default { name: "DashboardView" };
+import moment from "moment";
+export default {
+  name: "DashboardView",
+  methods: {
+    moment,
+  },
+};
 </script>
 
 <style lang="scss">

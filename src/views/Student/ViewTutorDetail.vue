@@ -35,7 +35,7 @@
     </div>
 
     <div style="margin-inline: 100px" class="mt-4">
-      <div class="columns v-centered">
+      <div class="columns is-vcentered">
         <div class="column">
           <p class="has-text-primary is-size-4">Tutor's Details</p>
         </div>
@@ -154,7 +154,7 @@
             <div class="column mr-6">
               <p class="font-size-one font-color-one">Contact Details</p>
               <div class="mt-3">
-                <div class="columns v-centered">
+                <div class="columns is-vcentered">
                   <div class="column is-narrow mr-4 pointer-style">
                     <font-awesome-icon
                       :icon="['fas', 'phone']"
@@ -167,7 +167,7 @@
                 </div>
               </div>
               <div class="my-4">
-                <div class="columns v-centered">
+                <div class="columns is-vcentered">
                   <div class="column is-narrow mr-4 pointer-style">
                     <font-awesome-icon
                       :icon="['fab', 'whatsapp']"

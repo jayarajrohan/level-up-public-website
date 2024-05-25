@@ -12,7 +12,7 @@
               <b-field>
                 <ValidationProvider
                   name="Username"
-                  :rules="{ required: true }"
+                  :rules="{ required: true, onlyAlphaNumericsAndUnderscores: true, min:5}, "
                   v-slot="{ errors }"
                 >
                   <b-input
@@ -25,24 +25,58 @@
                 </ValidationProvider>
               </b-field>
             </div>
-            <div class="column">
-              <label>Password<span class="has-text-danger ml-1">*</span></label>
-              <b-field>
-                <ValidationProvider
-                  name="Password"
-                  :rules="{ required: true }"
-                  v-slot="{ errors }"
+          </div>
+          <div class="mt-4">
+            <div class="columns">
+              <div class="column mr-4">
+                <label
+                  >Password<span class="has-text-danger ml-1">*</span></label
                 >
-                  <b-input
-                    type="text"
-                    v-model="password"
-                    placeholder="Enter password"
-                  />
-                  <span class="has-text-danger error-massage">{{
-                    errors[0]
-                  }}</span>
-                </ValidationProvider>
-              </b-field>
+                <b-field>
+                  <ValidationProvider
+                    name="Password"
+                    :rules="{ required: true, password: true}, "
+                    v-slot="{ errors }"
+                  >
+                    <b-input
+                      type="password"
+                      v-model="password"
+                      placeholder="Enter password"
+                    />
+                    <span class="has-text-danger error-massage">{{
+                      errors[0]
+                    }}</span>
+                  </ValidationProvider>
+                </b-field>
+              </div>
+              <div class="column">
+                <label
+                  >Confirm password<span class="has-text-danger ml-1"
+                    >*</span
+                  ></label
+                >
+                <b-field>
+                  <ValidationProvider
+                    name="Password"
+                    :rules="{ required: true, password: true}, "
+                    v-slot="{ errors }"
+                  >
+                    <b-input
+                      type="password"
+                      v-model="confirmPassword"
+                      placeholder="Confirm password"
+                    />
+                    <span class="has-text-danger error-massage">{{
+                      errors[0]
+                    }}</span>
+                    <span
+                      class="has-text-danger error-massage"
+                      v-if="password !== confirmPassword && !errors[0]"
+                      >Password does't match</span
+                    >
+                  </ValidationProvider>
+                </b-field>
+              </div>
             </div>
           </div>
           <div class="mt-4">
@@ -50,11 +84,20 @@
               <div class="column mr-4">
                 <label>Name</label>
                 <b-field>
-                  <b-input
-                    type="text"
-                    v-model="name"
-                    placeholder="Enter name"
-                  />
+                  <ValidationProvider
+                    name="Name"
+                    :rules="{ min:3}, "
+                    v-slot="{ errors }"
+                  >
+                    <b-input
+                      type="text"
+                      v-model="name"
+                      placeholder="Enter name"
+                    />
+                    <span class="has-text-danger error-massage">{{
+                      errors[0]
+                    }}</span>
+                  </ValidationProvider>
                 </b-field>
               </div>
               <div class="column">
@@ -168,12 +211,15 @@
                 <div class="mx-3 mt-2">
                   <div class="columns expertise-list">
                     <div
-                      v-for="(entry, entryIndex) in expertiseList"
-                      :key="entryIndex"
+                      v-for="expertiseItem in expertiseList"
+                      :key="expertiseItem.id"
                       class="expertise-item-list"
                     >
-                      <b-checkbox v-model="expertise" :native-value="expertise">
-                        {{ entry }}
+                      <b-checkbox
+                        v-model="expertise"
+                        :native-value="expertiseItem"
+                      >
+                        {{ expertiseItem.name }}
                       </b-checkbox>
                     </div>
                   </div>
@@ -188,7 +234,8 @@
             >
 
             <b-button
-              :disabled="invalid"
+              :disabled="invalid || password !== confirmPassword"
+              @click="onCreateTutor"
               class="is-primary is-size-5 ml-5 continue-button-width"
               >Create Tutor</b-button
             >
@@ -201,22 +248,19 @@
 
 <script>
 import "@/shared/validate.js";
+import {
+  apiRequestManager,
+  showSuccessToast,
+  showFailureToast,
+} from "@/util/util";
 export default {
   name: "CreateTutorsView",
   data() {
     return {
-      expertiseList: [
-        "Course 1",
-        "Course 2",
-        "Course 3",
-        "Course 4",
-        "Course 5",
-        "Course 6",
-        "Course 7",
-        "Course 8",
-      ],
+      expertiseList: [],
       username: "",
       password: "",
+      confirmPassword: "",
       name: "",
       email: "",
       expertise: [],
@@ -234,6 +278,61 @@ export default {
         this.expertise = this.expertise.filter((element) => element !== item);
       }
     },
+    fetchCourses() {
+      apiRequestManager("get", "/admin/courses", {}, {}, (res) => {
+        if (res.status === 200) {
+          this.expertiseList = res.data.courses.map((course) => {
+            return { name: course.courseName, id: course._id };
+          });
+          return;
+        }
+      });
+    },
+    onCreateTutor() {
+      apiRequestManager(
+        "post",
+        "/admin/tutor/create",
+        {
+          username: this.username,
+          password: this.password,
+          name: this.name,
+          email: this.email,
+          expertise: this.expertise.map((expertiseItem) => {
+            return expertiseItem.name;
+          }),
+          contactDetails: {
+            mobileNumber: this.mobileNumber,
+            whatsAppNumber: this.whatsAppNumber,
+            socialMedia: {
+              facebook: this.facebook,
+              twitter: this.twitter,
+              linkedIn: this.linkedIn,
+              youtube: this.youtube,
+            },
+          },
+        },
+        {},
+        (res) => {
+          if (res.status === 201) {
+            showSuccessToast("Tutor created successfully");
+            this.$router.go(-1);
+            return;
+          }
+          if (res.status === 400) {
+            showFailureToast("Username or Password validation failed");
+            return;
+          }
+
+          if (res.status === 409) {
+            showFailureToast("Username already exist");
+            return;
+          }
+        }
+      );
+    },
+  },
+  mounted() {
+    this.fetchCourses();
   },
 };
 </script>

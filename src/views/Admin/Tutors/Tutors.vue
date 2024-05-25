@@ -54,7 +54,7 @@
                 />
                 <p class="has-text-danger is-size-4">Delete</p>
 
-                <p>Are you sure you want to delete _________?</p>
+                <p>Are you sure you want to delete {{ deleteUserName }}?</p>
               </div>
               <div
                 class="has-text-centered mt-5"
@@ -72,7 +72,7 @@
                 <b-button
                   type="is-danger"
                   class="py-5 mr-5"
-                  @click="isModalActive = false"
+                  @click="onDeleteTutor"
                   style="width: 200px !important"
                   >Delete
                 </b-button>
@@ -90,7 +90,11 @@
 
 <script>
 import AppTable from "@/shared/appTable.vue";
-import { apiRequestManager, showFailureToast } from "@/util/util";
+import {
+  apiRequestManager,
+  showFailureToast,
+  showSuccessToast,
+} from "@/util/util";
 export default {
   name: "TutorsView",
   components: {
@@ -137,7 +141,13 @@ export default {
       },
     ];
 
-    return { tutorHeader, tutorData: [], isModalActive: false };
+    return {
+      tutorHeader,
+      tutorData: [],
+      isModalActive: false,
+      deleteUserName: "",
+      deleteUserId: "",
+    };
   },
   methods: {
     fetchTutorDetails() {
@@ -153,7 +163,9 @@ export default {
                 {
                   text: "View",
                   onClick: () => {
-                    this.$router.push(`/admin/dashboard/students/edit`);
+                    this.$router.push(
+                      `/admin/dashboard/tutors/view/${tutor._id}`
+                    );
                   },
                   icon: "",
                   type: "is-primary",
@@ -161,7 +173,9 @@ export default {
                 {
                   text: "Edit",
                   onClick: () => {
-                    this.$router.push(`/admin/dashboard/students/edit`);
+                    this.$router.push(
+                      `/admin/dashboard/tutors/edit/${tutor._id}`
+                    );
                   },
                   icon: "",
                   type: "is-primary",
@@ -169,6 +183,8 @@ export default {
                 {
                   text: "Delete",
                   onClick: () => {
+                    this.deleteUserId = tutor._id;
+                    this.deleteUserName = tutor.username;
                     this.isModalActive = true;
                   },
                   type: "is-danger",
@@ -190,6 +206,25 @@ export default {
         }
       });
     },
+    onDeleteTutor() {
+      apiRequestManager(
+        "delete",
+        `/admin/tutor/delete/${this.deleteUserId}`,
+        {},
+        {},
+        (res) => {
+          if (res.status === 200) {
+            this.fetchTutorDetails();
+            showSuccessToast("Tutor deleted successfully");
+            this.isModalActive = false;
+            return;
+          }
+        }
+      );
+    },
+  },
+  watch: {
+    $route: "fetchTutorDetails",
   },
   mounted() {
     this.fetchTutorDetails();

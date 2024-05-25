@@ -105,9 +105,25 @@ export default {
     msg: String,
   },
   data() {
-    return { password: "", role: "student", username: "" };
+    return {
+      password: "",
+      role: this.getRole(),
+      username: "",
+    };
   },
   methods: {
+    getRole() {
+      switch (localStorage.getItem("role")) {
+        case "ADMIN":
+          return "admin";
+        case "TUTOR":
+          return "tutor";
+        case "STUDENT":
+          return "student";
+        default:
+          return "student";
+      }
+    },
     onLogin() {
       if (this.role === "admin") {
         apiRequestManager(

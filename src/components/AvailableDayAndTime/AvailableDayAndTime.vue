@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="columns">
+    <div class="columns is-vcentered">
       <div class="column is-3 font-color-one">Days</div>
       <div class="column is-3 font-color-one mr-4">Start Time</div>
       <div class="column is-3 font-color-one">End Time</div>
@@ -8,9 +8,13 @@
     </div>
     <div v-for="(day, index) in week" :key="day.day">
       <div class="mb-2">
-        <div class="columns">
+        <div class="columns is-vcentered">
           <div class="column is-3">
-            <b-checkbox v-model="day.value" @input="onChange">
+            <b-checkbox
+              v-model="day.value"
+              @input="onChange"
+              :disabled="readonly"
+            >
               {{ day.day }}
             </b-checkbox>
           </div>
@@ -25,6 +29,7 @@
                       onTimeChange(index);
                     }
                   "
+                  :disabled="readonly"
                 >
                   <option v-for="hour in hours" :value="hour" :key="hour">
                     {{ hour }}
@@ -41,6 +46,7 @@
                       onTimeChange(index);
                     }
                   "
+                  :disabled="readonly"
                 >
                   <option
                     v-for="minute in minutes"
@@ -64,6 +70,7 @@
                       onTimeChange(index);
                     }
                   "
+                  :disabled="readonly"
                 >
                   <option v-for="hour in hours" :value="hour" :key="hour">
                     {{ hour }}
@@ -80,6 +87,7 @@
                       onTimeChange(index);
                     }
                   "
+                  :disabled="readonly"
                 >
                   <option
                     v-for="minute in minutes"
@@ -106,7 +114,7 @@
 <script>
 export default {
   name: "AvailableDayAndTime",
-  props: ["getData", "beAvailability"],
+  props: ["getData", "beAvailability", "readonly"],
   data() {
     return {
       week: [
@@ -263,7 +271,7 @@ export default {
   },
   watch: {
     beAvailability(newValue) {
-      if (!newValue) {
+      if (newValue !== undefined || newValue.length > 0) {
         this.week = newValue;
       }
     },

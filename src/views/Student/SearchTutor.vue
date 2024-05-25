@@ -37,7 +37,7 @@ div
     <ValidationObserver v-slot="{ invalid }">
       <form @submit.prevent="">
         <div style="margin-inline: 100px" class="mt-4">
-          <div class="columns v-centered">
+          <div class="columns is-vcentered">
             <div class="column">
               <p class="has-text-primary is-size-4">
                 Search tutors according to the courses you prefer and/or your

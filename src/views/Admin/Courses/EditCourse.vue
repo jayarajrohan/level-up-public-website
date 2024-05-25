@@ -57,6 +57,7 @@
             <b-button
               class="is-primary is-size-5 ml-5 continue-button-width"
               :disabled="invalid"
+              @click="onEditCourse"
               >Save</b-button
             >
           </div>
@@ -68,10 +69,66 @@
 
 <script>
 import "@/shared/validate.js";
+import {
+  apiRequestManager,
+  showFailureToast,
+  showSuccessToast,
+} from "@/util/util";
 export default {
   name: "EditCourseView",
   data() {
     return { description: "", courseName: "" };
+  },
+  mounted() {
+    this.getCourseDetails();
+  },
+  methods: {
+    getCourseDetails() {
+      const courseId = this.$route.params.courseId;
+      apiRequestManager("get", `/admin/course/${courseId}`, {}, {}, (res) => {
+        if (res.status === 200) {
+          this.courseName = res.data.course.courseName;
+          this.description = res.data.course.description;
+          return;
+        }
+
+        if (res.status === 404) {
+          showFailureToast("Course doesn't exist");
+          return;
+        }
+      });
+    },
+    onEditCourse() {
+      const courseId = this.$route.params.courseId;
+      apiRequestManager(
+        "put",
+        `/admin/course/update/${courseId}`,
+        {
+          courseName: this.courseName,
+          description: this.description,
+        },
+        {},
+        (res) => {
+          if (res.status === 200) {
+            showSuccessToast("Course updated successfully");
+            this.$router.go(-1);
+            return;
+          }
+          if (res.status === 400) {
+            showFailureToast("Validation failed in one of the fields");
+            return;
+          }
+          if (res.status === 404) {
+            showFailureToast("Course doesn't exist");
+            return;
+          }
+          if (res.status === 409) {
+            showFailureToast("Username already exist");
+            return;
+          }
+        }
+      );
+    },
   },
 };
 </script>

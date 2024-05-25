@@ -12,7 +12,7 @@
               <b-field>
                 <ValidationProvider
                   name="Course name"
-                  :rules="{ required: true }"
+                  :rules="{ required: true, min: 5 }"
                   v-slot="{ errors }"
                 >
                   <b-input
@@ -33,7 +33,7 @@
               <b-field>
                 <ValidationProvider
                   name="Description"
-                  :rules="{ required: true }"
+                  :rules="{ required: true, min: 10 }"
                   v-slot="{ errors }"
                 >
                   <b-input
@@ -57,6 +57,7 @@
             <b-button
               class="is-primary is-size-5 ml-5 continue-button-width"
               :disabled="invalid"
+              @click="onCreateCourse"
               >Create Course</b-button
             >
           </div>
@@ -68,10 +69,48 @@
 
 <script>
 import "@/shared/validate.js";
+import {
+  apiRequestManager,
+  showSuccessToast,
+  showFailureToast,
+} from "@/util/util";
+
 export default {
   name: "CreateCourseView",
   data() {
     return { description: "", courseName: "" };
+  },
+  methods: {
+    onCreateCourse() {
+      apiRequestManager(
+        "post",
+        "/admin/course/create",
+        {
+          courseName: this.courseName,
+          description: this.description,
+        },
+        {},
+        (res) => {
+          if (res.status === 201) {
+            this.courseName = "";
+            this.description = "";
+            showSuccessToast("Course created successfully");
+            this.$router.go(-1);
+            return;
+          }
+
+          if (res.status === 400) {
+            showFailureToast("Validation failed in one of the fields");
+            return;
+          }
+
+          if (res.status === 409) {
+            showFailureToast("Course with same name already exist");
+            return;
+          }
+        }
+      );
+    },
   },
 };
 </script>

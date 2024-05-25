@@ -29,7 +29,7 @@ export const dashboardChildrenRoutes = [
         name: "Tutors",
         path: "/admin/dashboard/tutors",
         component: () => import("@/views/Admin/Tutors/Tutors.vue"),
-        childSelectableList: ["Create Tutor", "Edit Tutor"],
+        childSelectableList: ["Create Tutor", "Edit Tutor", "View Tutor"],
         children: [
           {
             name: "Create Tutor",
@@ -40,8 +40,15 @@ export const dashboardChildrenRoutes = [
 
           {
             name: "Edit Tutor",
-            path: "/admin/dashboard/tutors/edit",
+            path: "/admin/dashboard/tutors/edit/:tutorId",
             component: () => import("@/views/Admin/Tutors/EditTutor.vue"),
+            hideFromSideBar: true,
+          },
+
+          {
+            name: "View Tutor",
+            path: "/admin/dashboard/tutors/view/:tutorId",
+            component: () => import("@/views/Admin/Tutors/ViewTutor.vue"),
             hideFromSideBar: true,
           },
         ],
@@ -61,7 +68,7 @@ export const dashboardChildrenRoutes = [
 
           {
             name: "Edit Course",
-            path: "/admin/dashboard/courses/edit",
+            path: "/admin/dashboard/courses/edit/:courseId",
             component: () => import("@/views/Admin/Courses/EditCourse.vue"),
             hideFromSideBar: true,
           },
