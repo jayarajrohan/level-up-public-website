@@ -28,7 +28,7 @@ div
         <div class="column">
           <p class="has-text-primary is-size-4">Profile</p>
         </div>
-        <div class="column is-narrow">
+        <div class="column is-narrow" v-if="!isEditDetail">
           <b-button
             class="is-primary is-size-5 ml-5 continue-button-width"
             @click="
@@ -58,7 +58,7 @@ div
                     <b-input
                       type="text"
                       v-model="username"
-                      readonly="!isEditDetail"
+                      :readonly="!isEditDetail"
                       placeholder="Enter user name"
                     /><span class="has-text-danger error-massage">{{
                       errors[0]
@@ -66,28 +66,7 @@ div
                   </ValidationProvider>
                 </b-field>
               </div>
-              <div class="column">
-                <label
-                  >Password<span class="has-text-danger ml-1">*</span></label
-                >
-                <b-field>
-                  <ValidationProvider
-                    name="Password"
-                    :rules="{ required: true }"
-                    v-slot="{ errors }"
-                  >
-                    <b-input
-                      type="text"
-                      readonly="!isEditDetail"
-                      v-model="password"
-                      placeholder="Enter password"
-                    />
-                    <span class="has-text-danger error-massage">{{
-                      errors[0]
-                    }}</span>
-                  </ValidationProvider>
-                </b-field>
-              </div>
+              <div class="column"></div>
             </div>
             <div class="mt-4">
               <div class="columns">
@@ -97,7 +76,7 @@ div
                     <b-input
                       type="text"
                       v-model="name"
-                      readonly="!isEditDetail"
+                      :readonly="!isEditDetail"
                       placeholder="Enter name"
                     />
                   </b-field>
@@ -112,7 +91,7 @@ div
                     >
                       <b-input
                         type="text"
-                        readonly="!isEditDetail"
+                        :readonly="!isEditDetail"
                         v-model="email"
                         placeholder="Enter email"
                       />
@@ -133,6 +112,8 @@ div
                       availabilityDetail(value);
                     }
                   "
+                  :beAvailability="beAvailability"
+                  :readonly="!isEditDetail"
                 />
               </div>
             </div>
@@ -150,7 +131,7 @@ div
                           <b-input
                             type="text"
                             v-model="mobileNumber"
-                            readonly="!isEditDetail"
+                            :readonly="!isEditDetail"
                           />
                         </b-field>
                       </div>
@@ -166,7 +147,7 @@ div
                           <b-input
                             type="text"
                             v-model="whatsAppNumber"
-                            readonly="!isEditDetail"
+                            :readonly="!isEditDetail"
                           />
                         </b-field>
                       </div>
@@ -187,7 +168,7 @@ div
                           <b-input
                             type="text"
                             v-model="facebook"
-                            readonly="!isEditDetail"
+                            :readonly="!isEditDetail"
                           />
                         </b-field>
                       </div>
@@ -203,7 +184,7 @@ div
                           <b-input
                             type="text"
                             v-model="twitter"
-                            readonly="!isEditDetail"
+                            :readonly="!isEditDetail"
                           />
                         </b-field>
                       </div>
@@ -219,7 +200,7 @@ div
                           <b-input
                             type="text"
                             v-model="linkedIn"
-                            readonly="!isEditDetail"
+                            :readonly="!isEditDetail"
                           />
                         </b-field>
                       </div>
@@ -235,7 +216,7 @@ div
                           <b-input
                             type="text"
                             v-model="youtube"
-                            readonly="!isEditDetail"
+                            :readonly="!isEditDetail"
                           />
                         </b-field>
                       </div>
@@ -251,17 +232,11 @@ div
                   <div class="mx-3 mt-2">
                     <div class="columns expertise-list">
                       <div
-                        v-for="(entry, entryIndex) in expertiseList"
+                        v-for="(entry, entryIndex) in expertiseListOne"
                         :key="entryIndex"
                         class="expertise-item-list"
                       >
-                        <b-checkbox
-                          v-model="expertise"
-                          :native-value="expertise"
-                          readonly="!isEditDetail"
-                        >
-                          {{ entry }}
-                        </b-checkbox>
+                        <span class="has-text-danger">* </span>{{ entry }}
                       </div>
                     </div>
                   </div>
@@ -298,23 +273,18 @@ div
 <script>
 import "@/shared/validate.js";
 import AvailableDayAndTime from "@/components/AvailableDayAndTime/AvailableDayAndTime.vue";
+import {
+  apiRequestManager,
+  showFailureToast,
+  convertAvailabilityData,
+} from "@/util/util";
+
 export default {
   name: "EditTutorsView",
   data() {
     return {
-      expertiseList: [
-        "Course 1",
-        "Course 2",
-        "Course 3",
-        "Course 4",
-        "Course 5",
-        "Course 6",
-        "Course 7",
-        "Course 8",
-      ],
-      minutesGranularity: 30,
-      from_time: "",
-      to_time: "",
+      expertiseListOne: [],
+      expertiseListTwo: [],
       username: "",
       password: "",
       name: "",
@@ -327,6 +297,7 @@ export default {
       facebook: "",
       twitter: "",
       linkedIn: "",
+      beAvailability: [],
       youtube: "",
     };
   },
@@ -337,6 +308,43 @@ export default {
     availabilityDetail(value) {
       this.availability = value;
     },
+    fetchTutorDetails() {
+      apiRequestManager("get", "/tutor/profile", {}, {}, (res) => {
+        if (res.status === 200) {
+          const tutor = res.data.tutor;
+          this.username = tutor.username;
+          this.name = tutor.name || "";
+          this.email = tutor.email || "";
+          this.expertiseListOne = tutor.expertise || [];
+          this.expertiseListTwo = tutor.expertise
+            ? this.expertiseList.filter((expertiseItem) =>
+                tutor.expertise.includes(expertiseItem.name)
+              )
+            : [];
+          this.mobileNumber = tutor.contactDetails?.mobileNumber || "";
+          this.whatsAppNumber = tutor.contactDetails?.whatsAppNumber || "";
+          this.facebook = tutor.contactDetails?.socialMedia?.facebook || "";
+          this.twitter = tutor.contactDetails?.socialMedia?.twitter || "";
+          this.linkedIn = tutor.contactDetails?.socialMedia?.linkedIn || "";
+          this.youtube = tutor.contactDetails?.socialMedia?.youtube || "";
+          this.beAvailability = convertAvailabilityData(tutor.availability);
+          return;
+        }
+
+        if (res.status === 400) {
+          showFailureToast("Validation failed in one of the fields");
+          return;
+        }
+
+        if (res.status === 409) {
+          showFailureToast("Username already exist");
+          return;
+        }
+      });
+    },
+  },
+  mounted() {
+    this.fetchTutorDetails();
   },
 };
 </script>

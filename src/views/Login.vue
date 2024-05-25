@@ -154,6 +154,41 @@ export default {
             }
           }
         );
+
+        return;
+      }
+
+      if (this.role === "tutor") {
+        apiRequestManager(
+          "post",
+          "/tutor/login",
+          {
+            username: this.username,
+            password: this.password,
+          },
+          {},
+          (res) => {
+            if (res.status === 200) {
+              showSuccessToast("Login success");
+              localStorage.setItem("role", res.data.role);
+              localStorage.setItem("token", res.data.token);
+              this.$router.push(`/tutor/students-viewed`);
+              return;
+            }
+
+            if (res.status === 400) {
+              showFailureToast("Username or Password validation failed");
+              return;
+            }
+
+            if (res.status === 404) {
+              showFailureToast("Tutor doesn't exist");
+              return;
+            }
+          }
+        );
+
+        return;
       }
     },
   },

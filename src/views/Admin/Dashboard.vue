@@ -17,19 +17,25 @@
           <div class="column mx-6 box-style">
             <div class="font-color-one pt-4">Total number of students</div>
             <div class="pb-4">
-              <strong class="is-size-4 has-text-primary pb-4">500</strong>
+              <strong class="is-size-4 has-text-primary pb-4">{{
+                studentsCount
+              }}</strong>
             </div>
           </div>
           <div class="column mx-6 box-style">
             <div class="font-color-one pt-4">Total number of tutors</div>
             <div class="pb-4">
-              <strong class="is-size-4 has-text-primary pb-4">15</strong>
+              <strong class="is-size-4 has-text-primary pb-4">{{
+                tutorsCount
+              }}</strong>
             </div>
           </div>
           <div class="column mx-6 box-style">
             <div class="font-color-one pt-4">Total number of courses</div>
             <div class="pb-4">
-              <strong class="is-size-4 has-text-primary pb-4">50</strong>
+              <strong class="is-size-4 has-text-primary pb-4">{{
+                coursesCount
+              }}</strong>
             </div>
           </div>
         </div>
@@ -43,10 +49,34 @@
 
 <script>
 import moment from "moment";
+import { apiRequestManager } from "@/util/util";
 export default {
   name: "DashboardView",
+  data() {
+    return {
+      studentsCount: 0,
+      tutorsCount: 0,
+      coursesCount: 0,
+    };
+  },
   methods: {
     moment,
+    fetchDashboardViewDetails() {
+      apiRequestManager("get", "/admin/dashboard/view", {}, {}, (res) => {
+        if (res.status === 200) {
+          this.studentsCount = res.data.dashboardDetails.studentsCount;
+          this.coursesCount = res.data.dashboardDetails.coursesCount;
+          this.tutorsCount = res.data.dashboardDetails.tutorsCount;
+          return;
+        }
+      });
+    },
+  },
+  mounted() {
+    this.fetchDashboardViewDetails();
+  },
+  watch: {
+    $route: "fetchDashboardViewDetails",
   },
 };
 </script>

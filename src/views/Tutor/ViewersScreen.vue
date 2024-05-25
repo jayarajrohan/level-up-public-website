@@ -27,11 +27,7 @@ div
                 alt="Log Out"
                 class="cover-style"
                 width="50px"
-                @click="
-                  () => {
-                    $router.push(`/`);
-                  }
-                "
+                @click="onLogout"
               />
             </b-tooltip>
           </div>
@@ -57,6 +53,9 @@ div
 
 <script>
 import AppTable from "@/shared/appTable.vue";
+
+import { apiRequestManager, showSuccessToast } from "@/util/util";
+
 export default {
   name: "viewersView",
   components: {
@@ -107,6 +106,17 @@ export default {
       },
     ];
     return { viewersData, viewersHeader, isModalActive: false };
+  },
+  methods: {
+    onLogout() {
+      apiRequestManager("get", "/tutor/logout", {}, {}, (res) => {
+        if (res.status === 200) {
+          showSuccessToast("Logged out successfully");
+          localStorage.removeItem("token");
+          this.$router.push(`/`);
+        }
+      });
+    },
   },
 };
 </script>
