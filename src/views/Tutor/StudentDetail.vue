@@ -34,9 +34,7 @@
           <div class="mt-4 mx-4">
             <div class="columns">
               <div class="column mr-4">
-                <label
-                  >User Name<span class="has-text-danger ml-1">*</span></label
-                >
+                <label>User Name</label>
                 <b-field>
                   <ValidationProvider
                     name="Username"
@@ -100,6 +98,22 @@
                         errors[0]
                       }}</span>
                     </ValidationProvider>
+                  </b-field>
+                </div>
+              </div>
+            </div>
+            <div class="mt-4">
+              <div class="columns">
+                <div class="column mr-4">
+                  <label>Recently viewed date</label>
+                  <b-field>
+                    <b-input type="text" readonly v-model="recentDate" />
+                  </b-field>
+                </div>
+                <div class="column">
+                  <label>Count</label>
+                  <b-field>
+                    <b-input type="text" readonly v-model="count" />
                   </b-field>
                 </div>
               </div>
