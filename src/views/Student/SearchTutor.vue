@@ -13,7 +13,7 @@ div
           width="44px"
           @click="
             () => {
-              $router.push(`/student/profile`);
+              $router.push(`/student/profile`).catch(() => []);
             }
           "
         />
@@ -161,7 +161,7 @@ export default {
         if (res.status === 200) {
           showSuccessToast("Logged out successfully");
           localStorage.removeItem("token");
-          this.$router.push(`/`);
+          this.$router.push(`/`).catch(() => []);
         }
       });
     },
@@ -187,7 +187,9 @@ export default {
                   {
                     text: "View",
                     onClick: () => {
-                      this.$router.push(`/student/tutor-details/${tutor._id}`);
+                      this.$router
+                        .push(`/student/tutor-details/${tutor._id}`)
+                        .catch(() => []);
                     },
                     icon: "",
                     type: "is-primary",
@@ -213,6 +215,9 @@ export default {
   },
   mounted() {
     this.fetchCourses();
+  },
+  watch: {
+    $route: "fetchCourses",
   },
 };
 </script>

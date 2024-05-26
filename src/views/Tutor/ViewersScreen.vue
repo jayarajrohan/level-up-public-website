@@ -15,7 +15,7 @@ div
               width="44px"
               @click="
                 () => {
-                  $router.push(`/tutor/profile`);
+                  $router.push(`/tutor/profile`).catch(() => []);
                 }
               "
             />
@@ -113,7 +113,7 @@ export default {
         if (res.status === 200) {
           showSuccessToast("Logged out successfully");
           localStorage.removeItem("token");
-          this.$router.push(`/`);
+          this.$router.push(`/`).catch(() => []);
         }
       });
     },

@@ -15,7 +15,7 @@ div
             width="50px"
             @click="
               () => {
-                $router.push(`/`);
+                $router.push(`/`).catch(() => []);
               }
             "
           />
@@ -608,6 +608,9 @@ export default {
   },
   mounted() {
     this.fetchTutorDetails();
+  },
+  watch: {
+    $route: "fetchTutorDetails",
   },
 };
 </script>

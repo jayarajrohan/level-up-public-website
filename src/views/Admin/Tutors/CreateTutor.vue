@@ -334,6 +334,9 @@ export default {
   mounted() {
     this.fetchCourses();
   },
+  watch: {
+    $route: "fetchCourses",
+  },
 };
 </script>
 

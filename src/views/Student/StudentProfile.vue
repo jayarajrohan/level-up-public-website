@@ -14,7 +14,7 @@
             width="50px"
             @click="
               () => {
-                $router.push(`/`);
+                $router.push(`/`).catch(() => []);
               }
             "
           />
@@ -391,6 +391,9 @@ export default {
   },
   mounted() {
     this.fetchStudentDetails();
+  },
+  watch: {
+    $route: "fetchStudentDetails",
   },
 };
 </script>

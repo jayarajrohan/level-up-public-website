@@ -64,7 +64,7 @@ export default {
         if (res.status === 200) {
           showSuccessToast("Logged out successfully");
           localStorage.removeItem("token");
-          this.$router.push(`/`);
+          this.$router.push(`/`).catch(() => []);
         }
       });
     },

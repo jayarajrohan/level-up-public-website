@@ -314,7 +314,7 @@ export default {
         (res) => {
           if (res.status === 200) {
             showSuccessToast("Student updated successfully");
-            this.$router.push("/admin/dashboard/students");
+            this.$router.push("/admin/dashboard/students").catch(() => []);
             return;
           }
           if (res.status === 400) {
@@ -335,6 +335,9 @@ export default {
   },
   mounted() {
     this.getStudentDetails();
+  },
+  watch: {
+    $route: "getStudentDetails",
   },
 };
 </script>

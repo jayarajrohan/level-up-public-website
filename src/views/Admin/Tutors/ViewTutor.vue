@@ -258,6 +258,9 @@ export default {
   mounted() {
     this.fetchTutorDetails();
   },
+  watch: {
+    $route: "fetchTutorDetails",
+  },
 };
 </script>
 

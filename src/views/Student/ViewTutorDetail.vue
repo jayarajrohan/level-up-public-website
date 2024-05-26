@@ -12,7 +12,7 @@
           width="44px"
           @click="
             () => {
-              $router.push(`/student/profileScreen`);
+              $router.push(`/student/profileScreen`).catch(() => []);
             }
           "
         />
@@ -26,7 +26,7 @@
             width="50px"
             @click="
               () => {
-                $router.push(`/`);
+                $router.push(`/`).catch(() => []);
               }
             "
           />
@@ -294,6 +294,9 @@ export default {
   },
   mounted() {
     this.fetchTutorDetails();
+  },
+  watch: {
+    $route: "fetchTutorDetails",
   },
 };
 </script>

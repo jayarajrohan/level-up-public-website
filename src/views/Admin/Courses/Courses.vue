@@ -13,7 +13,9 @@
               expanded
               @click="
                 () => {
-                  $router.push(`/admin/dashboard/courses/create`);
+                  $router
+                    .push(`/admin/dashboard/courses/create`)
+                    .catch(() => []);
                 }
               "
               >Create Course</b-button
@@ -157,9 +159,9 @@ export default {
                   icon: "",
                   type: "is-primary",
                   onClick: () => {
-                    this.$router.push(
-                      `/admin/dashboard/courses/edit/${course._id}`
-                    );
+                    this.$router
+                      .push(`/admin/dashboard/courses/edit/${course._id}`)
+                      .catch(() => []);
                   },
                 },
                 {

@@ -13,7 +13,9 @@
               expanded
               @click="
                 () => {
-                  $router.push(`/admin/dashboard/students/create`);
+                  $router
+                    .push(`/admin/dashboard/students/create`)
+                    .catch(() => []);
                 }
               "
               >Create Student</b-button
@@ -114,9 +116,9 @@ export default {
                 {
                   text: "Edit",
                   onClick: () => {
-                    this.$router.push(
-                      `/admin/dashboard/students/edit/${student._id}`
-                    );
+                    this.$router
+                      .push(`/admin/dashboard/students/edit/${student._id}`)
+                      .catch(() => []);
                   },
                   icon: "",
                   type: "is-primary",

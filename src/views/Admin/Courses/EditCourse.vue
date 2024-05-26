@@ -130,6 +130,9 @@ export default {
       );
     },
   },
+  watch: {
+    $route: "getCourseDetails",
+  },
 };
 </script>
 

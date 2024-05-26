@@ -139,7 +139,7 @@ export default {
               showSuccessToast("Login success");
               localStorage.setItem("role", res.data.role);
               localStorage.setItem("token", res.data.token);
-              this.$router.push(`/admin/dashboard`);
+              this.$router.push(`/admin/dashboard`).catch(() => []);
               return;
             }
 
@@ -172,7 +172,7 @@ export default {
               showSuccessToast("Login success");
               localStorage.setItem("role", res.data.role);
               localStorage.setItem("token", res.data.token);
-              this.$router.push(`/tutor/students-viewed`);
+              this.$router.push(`/tutor/students-viewed`).catch(() => []);
               return;
             }
 
@@ -204,7 +204,7 @@ export default {
               showSuccessToast("Login success");
               localStorage.setItem("role", res.data.role);
               localStorage.setItem("token", res.data.token);
-              this.$router.push(`/student/search-tutor`);
+              this.$router.push(`/student/search-tutor`).catch(() => []);
               return;
             }
 

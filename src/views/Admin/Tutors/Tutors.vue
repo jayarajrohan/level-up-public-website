@@ -13,7 +13,9 @@
               expanded
               @click="
                 () => {
-                  $router.push(`/admin/dashboard/tutors/create`);
+                  $router
+                    .push(`/admin/dashboard/tutors/create`)
+                    .catch(() => []);
                 }
               "
               >Create Tutor</b-button
@@ -163,9 +165,9 @@ export default {
                 {
                   text: "View",
                   onClick: () => {
-                    this.$router.push(
-                      `/admin/dashboard/tutors/view/${tutor._id}`
-                    );
+                    this.$router
+                      .push(`/admin/dashboard/tutors/view/${tutor._id}`)
+                      .catch(() => []);
                   },
                   icon: "",
                   type: "is-primary",
@@ -173,9 +175,9 @@ export default {
                 {
                   text: "Edit",
                   onClick: () => {
-                    this.$router.push(
-                      `/admin/dashboard/tutors/edit/${tutor._id}`
-                    );
+                    this.$router
+                      .push(`/admin/dashboard/tutors/edit/${tutor._id}`)
+                      .catch(() => []);
                   },
                   icon: "",
                   type: "is-primary",
