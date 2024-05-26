@@ -176,7 +176,7 @@ export default {
         "post",
         "/student/find-tutors",
         {
-          courses: this.courses,
+          courses: this.courses.map((course) => course.name),
           availability: this.availability || [],
         },
         {},
