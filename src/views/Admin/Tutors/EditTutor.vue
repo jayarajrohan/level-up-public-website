@@ -12,7 +12,7 @@
               <b-field>
                 <ValidationProvider
                   name="Username"
-                  :rules="{ required: true }"
+                  :rules="{ required: true, onlyAlphaNumericsAndUnderscores: true, min:5}, "
                   v-slot="{ errors }"
                 >
                   <b-input
@@ -32,11 +32,20 @@
               <div class="column mr-4">
                 <label>Name</label>
                 <b-field>
-                  <b-input
-                    type="text"
-                    v-model="name"
-                    placeholder="Enter name"
-                  />
+                  <ValidationProvider
+                    name="Name"
+                    :rules="{ min:3}, "
+                    v-slot="{ errors }"
+                  >
+                    <b-input
+                      type="text"
+                      v-model="name"
+                      placeholder="Enter name"
+                    />
+                    <span class="has-text-danger error-massage">{{
+                      errors[0]
+                    }}</span>
+                  </ValidationProvider>
                 </b-field>
               </div>
               <div class="column">

@@ -48,7 +48,11 @@
             <b-field>
               <ValidationProvider
                 name="Username"
-                :rules="{ required: true }"
+                :rules="{
+                  required: true,
+                  onlyAlphaNumericsAndUnderscores: true,
+                  min: 5,
+                }"
                 v-slot="{ errors }"
               >
                 <b-input
