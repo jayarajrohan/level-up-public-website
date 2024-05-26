@@ -321,7 +321,7 @@ export default {
     fetchStudentDetails() {
       apiRequestManager("get", "/student/profile", {}, {}, (res) => {
         if (res.status === 200) {
-          const student = res.data.tutor;
+          const student = res.data.student;
           this.username = student.username;
           this.studentName = student.name || "";
           this.studentEmail = student.email || "";
@@ -360,9 +360,9 @@ export default {
     onEditStudent() {
       apiRequestManager(
         "put",
-        `/student/update`,
+        "/student/update",
         {
-          username: this.username || "",
+          username: this.username,
           name: this.studentName || "",
           email: this.studentEmail || "",
         },
@@ -370,7 +370,7 @@ export default {
         (res) => {
           if (res.status === 200) {
             showSuccessToast("Profile updated successfully");
-            this.fetchTutorDetails();
+            this.fetchStudentDetails();
             return;
           }
           if (res.status === 400) {
