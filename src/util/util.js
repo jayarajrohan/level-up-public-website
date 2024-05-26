@@ -24,7 +24,7 @@ export function apiRequestManager(
     .catch((err) => {
       const error = err.response;
 
-      if (error.status === 401) {
+      if (error.status === 401 || error.status === 403) {
         localStorage.removeItem("token");
         router.push({ name: "Login" }).catch(() => []);
         return;
