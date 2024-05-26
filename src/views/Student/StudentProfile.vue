@@ -27,7 +27,7 @@
         <div class="column">
           <p class="has-text-primary is-size-4">Profile</p>
         </div>
-        <div class="column is-narrow">
+        <div class="column is-narrow" v-if="!isEditDetail">
           <b-button
             class="is-primary is-size-5 ml-5 continue-button-width"
             @click="
@@ -134,11 +134,7 @@
               <b-button
                 class="is-size-5 cancel-button"
                 v-if="isEditDetail"
-                @click="
-                  () => {
-                    isEditDetail = false;
-                  }
-                "
+                @click="fetchStudentDetails"
                 >Cancel</b-button
               >
               <b-button
