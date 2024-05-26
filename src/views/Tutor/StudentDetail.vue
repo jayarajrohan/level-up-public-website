@@ -170,6 +170,8 @@ export default {
             this.username = student.username;
             this.studentName = student.name || "";
             this.studentEmail = student.email || "";
+            this.count = this.$root.count;
+            this.recentDate = this.$root.recentDate;
             return;
           }
         }

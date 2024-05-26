@@ -36,5 +36,9 @@ Vue.component("font-awesome-icon", FontAwesomeIcon);
 
 new Vue({
   router,
+  data: {
+    count: 0,
+    recentDate: "",
+  },
   render: (h) => h(App),
 }).$mount("#app");

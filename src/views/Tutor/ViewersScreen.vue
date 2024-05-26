@@ -63,6 +63,7 @@ div
 import AppTable from "@/components/AppTable/appTable.vue";
 import AppLoader from "@/components/AppLoader/appLoader.vue";
 import { apiRequestManager, showSuccessToast } from "@/util/util";
+import moment from "moment";
 
 export default {
   name: "viewersView",
@@ -120,12 +121,16 @@ export default {
           this.viewersData = res.data.students.map((student) => {
             return {
               id: student.id,
-              recentDate: student.recentDate,
+              recentDate: moment(student.recentDate).format("YYYY-MM-DD"),
               count: student.count,
               button: [
                 {
                   text: "View",
                   onClick: () => {
+                    this.$root.count = student.count;
+                    this.$root.recentDate = moment(student.recentDate).format(
+                      "YYYY-MM-DD"
+                    );
                     this.$router
                       .push(`/tutor/student-detail/${student.id}`)
                       .catch(() => []);
@@ -143,6 +148,9 @@ export default {
   },
   mounted() {
     this.fetchViewedStudentDetails();
+  },
+  watch: {
+    $route: "fetchViewedStudentDetails",
   },
 };
 </script>
