@@ -445,12 +445,14 @@ div
         </div>
       </b-modal>
     </div>
+    <AppLoader :isLoading="isLoading" />
   </div>
 </template>
 
 <script>
 import "@/shared/validate.js";
 import AvailableDayAndTime from "@/components/AvailableDayAndTime/AvailableDayAndTime.vue";
+import AppLoader from "@/components/AppLoader/appLoader.vue";
 import {
   apiRequestManager,
   showSuccessToast,
@@ -481,17 +483,21 @@ export default {
       linkedIn: "",
       beAvailability: [],
       youtube: "",
+      isLoading: false,
     };
   },
   components: {
     AvailableDayAndTime,
+    AppLoader,
   },
   methods: {
     availabilityDetail(value) {
       this.availability = value;
     },
     fetchTutorDetails() {
+      this.isLoading = true;
       apiRequestManager("get", "/tutor/courses", {}, {}, (res) => {
+        this.isLoading = false;
         if (res.status === 200) {
           this.expertiseListTwo = res.data.courses.map((course) => {
             return { name: course.courseName, id: course._id };
@@ -534,6 +540,7 @@ export default {
       });
     },
     onEditTutor() {
+      this.isLoading = true;
       apiRequestManager(
         "put",
         `/tutor/update`,
@@ -558,6 +565,7 @@ export default {
         },
         {},
         (res) => {
+          this.isLoading = false;
           if (res.status === 200) {
             showSuccessToast("Profile updated successfully");
             this.fetchTutorDetails();
@@ -579,12 +587,14 @@ export default {
       );
     },
     onChangePassword() {
+      this.isLoading = true;
       apiRequestManager(
         "put",
         "/tutor/update-password",
         { password: this.newPassword, currentPassword: this.currentPassword },
         {},
         (res) => {
+          this.isLoading = false;
           if (res.status === 200) {
             showSuccessToast("Tutor password updated successfully");
             this.confirmNewPassword = "";

@@ -243,11 +243,13 @@
         </div>
       </form></ValidationObserver
     >
+    <AppLoader :isLoading="isLoading" />
   </div>
 </template>
 
 <script>
 import "@/shared/validate.js";
+import AppLoader from "@/components/AppLoader/appLoader.vue";
 import {
   apiRequestManager,
   showSuccessToast,
@@ -255,6 +257,9 @@ import {
 } from "@/util/util";
 export default {
   name: "CreateTutorsView",
+  components: {
+    AppLoader,
+  },
   data() {
     return {
       expertiseList: [],
@@ -270,6 +275,7 @@ export default {
       twitter: "",
       linkedIn: "",
       youtube: "",
+      isLoading: false,
     };
   },
   methods: {
@@ -279,7 +285,9 @@ export default {
       }
     },
     fetchCourses() {
+      this.isLoading = true;
       apiRequestManager("get", "/admin/courses", {}, {}, (res) => {
+        this.isLoading = false;
         if (res.status === 200) {
           this.expertiseList = res.data.courses.map((course) => {
             return { name: course.courseName, id: course._id };
@@ -289,6 +297,7 @@ export default {
       });
     },
     onCreateTutor() {
+      this.isLoading = true;
       apiRequestManager(
         "post",
         "/admin/tutor/create",
@@ -313,6 +322,7 @@ export default {
         },
         {},
         (res) => {
+          this.isLoading = false;
           if (res.status === 201) {
             showSuccessToast("Tutor created successfully");
             this.$router.go(-1);

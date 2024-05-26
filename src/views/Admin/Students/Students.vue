@@ -22,13 +22,19 @@
             >
           </div>
         </div>
-        <div class="mt-4 mx-4">
+        <div class="mt-4 mx-4" v-if="studentData.length !== 0">
           <AppTable
             :data="studentData"
             :columns="studentHeader"
             row-class-one="striped-table-color-2"
             rowClassTwo="striped-table-color"
           />
+        </div>
+        <div
+          class="mt-4 mx-4 is-flex is-justify-content-center is-align-content-center"
+          v-if="studentData.length === 0"
+        >
+          No students available
         </div>
         <b-modal
           v-model="isModalActive"
@@ -87,11 +93,13 @@
     <transition name="route" mode="out-in">
       <router-view></router-view
     ></transition>
+    <AppLoader :isLoading="isLoading" />
   </div>
 </template>
 
 <script>
-import AppTable from "@/shared/appTable.vue";
+import AppTable from "@/components/AppTable/appTable.vue";
+import AppLoader from "@/components/AppLoader/appLoader.vue";
 import {
   apiRequestManager,
   showFailureToast,
@@ -101,10 +109,13 @@ export default {
   name: "StudentsView",
   components: {
     AppTable,
+    AppLoader,
   },
   methods: {
     fetchStudentDetails() {
+      this.isLoading = true;
       apiRequestManager("get", "/admin/students", {}, {}, (res) => {
+        this.isLoading = false;
         if (res.status === 200) {
           this.studentData = res.data.students.map((student) => {
             return {
@@ -150,12 +161,14 @@ export default {
       });
     },
     onDeleteStudent() {
+      this.isLoading = true;
       apiRequestManager(
         "delete",
         `/admin/student/delete/${this.deleteUserId}`,
         {},
         {},
         (res) => {
+          this.isLoading = false;
           if (res.status === 200) {
             this.fetchStudentDetails();
             showSuccessToast("Student deleted successfully");
@@ -216,6 +229,7 @@ export default {
       isModalActive: false,
       deleteUserId: "",
       deleteUserName: "",
+      isLoading: false,
     };
   },
 };

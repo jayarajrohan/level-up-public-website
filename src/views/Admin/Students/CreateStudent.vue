@@ -137,11 +137,13 @@
         </div>
       </form></ValidationObserver
     >
+    <AppLoader :isLoading="isLoading" />
   </div>
 </template>
 
 <script>
 import "@/shared/validate.js";
+import AppLoader from "@/components/AppLoader/appLoader.vue";
 import {
   apiRequestManager,
   showSuccessToast,
@@ -157,10 +159,15 @@ export default {
       username: "",
       studentName: "",
       confirmPassword: "",
+      isLoading: false,
     };
+  },
+  components: {
+    AppLoader,
   },
   methods: {
     onCreateStudent() {
+      this.isLoading = true;
       apiRequestManager(
         "post",
         "/admin/student/create",
@@ -172,6 +179,7 @@ export default {
         },
         {},
         (res) => {
+          this.isLoading = false;
           if (res.status === 201) {
             this.username = "";
             this.password = "";

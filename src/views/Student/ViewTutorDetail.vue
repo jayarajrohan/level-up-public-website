@@ -239,16 +239,18 @@
         </div>
       </div>
     </div>
+    <AppLoader :isLoading="isLoading" />
   </div>
 </template>
 
 <script>
 import "@/shared/validate.js";
+import AppLoader from "@/components/AppLoader/appLoader.vue";
 import AvailableDayAndTime from "@/components/AvailableDayAndTime/AvailableDayAndTime.vue";
 import { apiRequestManager, convertAvailabilityData } from "@/util/util";
 export default {
   name: "FindTutor",
-  components: { AvailableDayAndTime },
+  components: { AvailableDayAndTime, AppLoader },
   data() {
     return {
       username: "",
@@ -262,10 +264,12 @@ export default {
       linkedIn: "",
       youtube: "",
       beAvailability: [],
+      isLoading: false,
     };
   },
   methods: {
     fetchTutorDetails() {
+      this.isLoading = true;
       const tutorId = this.$route.params.tutorId;
       apiRequestManager(
         "get",
@@ -273,6 +277,7 @@ export default {
         {},
         {},
         (res) => {
+          this.isLoading = false;
           if (res.status === 200) {
             const tutor = res.data.tutor;
             this.username = tutor.username;

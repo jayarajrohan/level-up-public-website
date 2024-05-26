@@ -88,7 +88,7 @@ const routes = [
   {
     path: "/admin/dashboard-home",
     name: "Dashboard Home",
-    component: () => import("@/shared/layout.vue"),
+    component: () => import("@/components/Layout/layout.vue"),
     children: [
       ...dashboardChildrenRoutes.map((route) => {
         return {
@@ -114,6 +114,11 @@ const routes = [
         name: "Tutor Profile",
         path: "/tutor/profile",
         component: () => import("@/views/Tutor/ProfileDetail.vue"),
+      },
+      {
+        name: "Student Detail",
+        path: "/tutor/student-detail/:studentId",
+        component: () => import("@/views/Tutor/StudentDetail.vue"),
       },
     ],
   },

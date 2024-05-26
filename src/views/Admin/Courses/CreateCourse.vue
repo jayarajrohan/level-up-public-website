@@ -64,11 +64,13 @@
         </div>
       </form></ValidationObserver
     >
+    <AppLoader :isLoading="isLoading" />
   </div>
 </template>
 
 <script>
 import "@/shared/validate.js";
+import AppLoader from "@/components/AppLoader/appLoader.vue";
 import {
   apiRequestManager,
   showSuccessToast,
@@ -78,10 +80,14 @@ import {
 export default {
   name: "CreateCourseView",
   data() {
-    return { description: "", courseName: "" };
+    return { description: "", courseName: "", isLoading: false };
+  },
+  components: {
+    AppLoader,
   },
   methods: {
     onCreateCourse() {
+      this.isLoading = true;
       apiRequestManager(
         "post",
         "/admin/course/create",
@@ -91,6 +97,7 @@ export default {
         },
         {},
         (res) => {
+          this.isLoading = false;
           if (res.status === 201) {
             this.courseName = "";
             this.description = "";

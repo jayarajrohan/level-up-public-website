@@ -22,13 +22,19 @@
             >
           </div>
         </div>
-        <div class="mt-4 mx-4">
+        <div class="mt-4 mx-4" v-if="courseData.length !== 0">
           <AppTable
             :data="courseData"
             :columns="courseHeader"
             row-class-one="striped-table-color-2"
             rowClassTwo="striped-table-color"
           />
+        </div>
+        <div
+          class="mt-4 mx-4 is-flex is-justify-content-center is-align-content-center"
+          v-if="courseData.length === 0"
+        >
+          No courses available
         </div>
         <b-modal
           v-model="isModalActive"
@@ -87,11 +93,13 @@
     <transition name="route" mode="out-in">
       <router-view></router-view
     ></transition>
+    <AppLoader :isLoading="isLoading" />
   </div>
 </template>
 
 <script>
-import AppTable from "@/shared/appTable.vue";
+import AppTable from "@/components/AppTable/appTable.vue";
+import AppLoader from "@/components/AppLoader/appLoader.vue";
 import {
   apiRequestManager,
   showFailureToast,
@@ -101,6 +109,7 @@ export default {
   name: "CoursesView",
   components: {
     AppTable,
+    AppLoader,
   },
   data() {
     const courseHeader = [
@@ -141,11 +150,14 @@ export default {
       isModalActive: false,
       deleteCourseName: "",
       deleteCourseId: "",
+      isLoading: false,
     };
   },
   methods: {
     fetchCourseDetails() {
+      this.isLoading = true;
       apiRequestManager("get", "/admin/courses", {}, {}, (res) => {
+        this.isLoading = false;
         if (res.status === 200) {
           this.courseData = res.data.courses.map((course) => {
             return {
@@ -191,12 +203,14 @@ export default {
       });
     },
     onDeleteCourse() {
+      this.isLoading = true;
       apiRequestManager(
         "delete",
         `/admin/course/delete/${this.deleteCourseId}`,
         {},
         {},
         (res) => {
+          this.isLoading = false;
           if (res.status === 200) {
             this.fetchCourseDetails();
             showSuccessToast("Course deleted successfully");

@@ -293,11 +293,13 @@
         </div>
       </b-modal>
     </div>
+    <AppLoader :isLoading="isLoading" />
   </div>
 </template>
 
 <script>
 import "@/shared/validate.js";
+import AppLoader from "@/components/AppLoader/appLoader.vue";
 import {
   apiRequestManager,
   showSuccessToast,
@@ -305,6 +307,9 @@ import {
 } from "@/util/util";
 export default {
   name: "StudentProfileView",
+  components: {
+    AppLoader,
+  },
   data() {
     return {
       isChangePassword: false,
@@ -315,11 +320,14 @@ export default {
       username: "",
       studentName: "",
       isEditDetail: false,
+      isLoading: false,
     };
   },
   methods: {
     fetchStudentDetails() {
+      this.isLoading = true;
       apiRequestManager("get", "/student/profile", {}, {}, (res) => {
+        this.isLoading = false;
         if (res.status === 200) {
           const student = res.data.student;
           this.username = student.username;
@@ -331,12 +339,14 @@ export default {
       });
     },
     onChangePassword() {
+      this.isLoading = true;
       apiRequestManager(
         "put",
         "/student/update-password",
         { password: this.newPassword, currentPassword: this.currentPassword },
         {},
         (res) => {
+          this.isLoading = false;
           if (res.status === 200) {
             showSuccessToast("Student password updated successfully");
             this.confirmNewPassword = "";
@@ -358,6 +368,7 @@ export default {
       );
     },
     onEditStudent() {
+      this.isLoading = true;
       apiRequestManager(
         "put",
         "/student/update",
@@ -368,6 +379,7 @@ export default {
         },
         {},
         (res) => {
+          this.isLoading = false;
           if (res.status === 200) {
             showSuccessToast("Profile updated successfully");
             this.fetchStudentDetails();

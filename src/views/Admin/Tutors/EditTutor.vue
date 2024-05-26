@@ -337,11 +337,13 @@
         </div>
       </div>
     </b-modal>
+    <AppLoader :isLoading="isLoading" />
   </div>
 </template>
 
 <script>
 import "@/shared/validate.js";
+import AppLoader from "@/components/AppLoader/appLoader.vue";
 import {
   apiRequestManager,
   showFailureToast,
@@ -350,7 +352,9 @@ import {
 } from "@/util/util";
 export default {
   name: "EditTutorsView",
-
+  components: {
+    AppLoader,
+  },
   data() {
     return {
       expertiseList: [],
@@ -369,13 +373,16 @@ export default {
       confirmNewPassword: "",
       currentPassword: "",
       isChangePassword: false,
+      isLoading: false,
     };
   },
   methods: {
     fetchTutorDetails() {
+      this.isLoading = true;
       const tutorId = this.$route.params.tutorId;
 
       apiRequestManager("get", "/admin/courses", {}, {}, (res) => {
+        this.isLoading = false;
         if (res.status === 200) {
           this.expertiseList = res.data.courses.map((course) => {
             return { name: course.courseName, id: course._id };
@@ -417,6 +424,7 @@ export default {
       });
     },
     onChangePassword() {
+      this.isLoading = true;
       const tutorId = this.$route.params.tutorId;
       apiRequestManager(
         "put",
@@ -424,6 +432,7 @@ export default {
         { password: this.newPassword, currentPassword: this.currentPassword },
         {},
         (res) => {
+          this.isLoading = false;
           if (res.status === 200) {
             showSuccessToast("Tutor password updated successfully");
             this.confirmNewPassword = "";
@@ -445,6 +454,7 @@ export default {
       );
     },
     onEditTutor() {
+      this.isLoading = true;
       const tutorId = this.$route.params.tutorId;
       apiRequestManager(
         "put",
@@ -469,6 +479,7 @@ export default {
         },
         {},
         (res) => {
+          this.isLoading = false;
           if (res.status === 200) {
             showSuccessToast("Tutor updated successfully");
             this.$router.go(-1);

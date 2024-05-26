@@ -1,4 +1,3 @@
-div
 <template>
   <div>
     <div class="columns top-bar py-1 px-2">
@@ -97,19 +96,22 @@ div
           </div>
         </div></form
     ></ValidationObserver>
+    <AppLoader :isLoading="isLoading" />
   </div>
 </template>
 
 <script>
 import "@/shared/validate.js";
-import AppTable from "@/shared/appTable.vue";
+import AppTable from "@/components/AppTable/appTable.vue";
 import AvailableDayAndTime from "@/components/AvailableDayAndTime/AvailableDayAndTime.vue";
+import AppLoader from "@/components/AppLoader/appLoader.vue";
 import { apiRequestManager, showSuccessToast } from "@/util/util";
 export default {
   name: "FindTutor",
   components: {
     AvailableDayAndTime,
     AppTable,
+    AppLoader,
   },
   data() {
     const tutorHeader = [
@@ -149,6 +151,7 @@ export default {
       tutorHeader,
       tutorData: [],
       availability: [],
+      isLoading: false,
       isSearchClicked: false,
     };
   },
@@ -157,7 +160,9 @@ export default {
       this.availability = value;
     },
     onLogout() {
+      this.isLoading = true;
       apiRequestManager("get", "/student/logout", {}, {}, (res) => {
+        this.isLoading = false;
         if (res.status === 200) {
           showSuccessToast("Logged out successfully");
           localStorage.removeItem("token");
@@ -166,6 +171,7 @@ export default {
       });
     },
     onSearchTutor() {
+      this.isLoading = true;
       apiRequestManager(
         "post",
         "/student/find-tutors",
@@ -175,6 +181,7 @@ export default {
         },
         {},
         (res) => {
+          this.isLoading = false;
           this.isSearchClicked = true;
           if (res.status === 200) {
             this.tutorData = res.data.tutors.map((tutor) => {
@@ -203,7 +210,9 @@ export default {
       );
     },
     fetchCourses() {
+      this.isLoading = true;
       apiRequestManager("get", "/student/courses", {}, {}, (res) => {
+        this.isLoading = false;
         if (res.status === 200) {
           this.expertiseList = res.data.courses.map((course) => {
             return { name: course.courseName, id: course._id };

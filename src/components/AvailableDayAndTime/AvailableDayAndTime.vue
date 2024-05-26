@@ -2,9 +2,12 @@
   <div>
     <div class="columns is-vcentered">
       <div class="column is-3 font-color-one">Days</div>
-      <div class="column is-3 font-color-one mr-4">Start Time</div>
-      <div class="column is-3 font-color-one">End Time</div>
-      <div class="column"></div>
+      <div class="column">
+        <div class="columns">
+          <div class="column is-3 font-color-one mr-4">Start Time</div>
+          <div class="column is-3 font-color-one">End Time</div>
+        </div>
+      </div>
     </div>
     <div v-for="(day, index) in week" :key="day.day">
       <div class="mb-2">
@@ -18,94 +21,96 @@
               {{ day.day }}
             </b-checkbox>
           </div>
-          <div class="column is-3 mr-4">
-            <div class="columns is-vcentered" v-if="day.value === true">
-              <div class="column is-5">
-                <b-select
-                  v-model="day.fromHour"
-                  expanded
-                  @input="
-                    () => {
-                      onTimeChange(index);
-                    }
-                  "
-                  :disabled="readonly"
-                >
-                  <option v-for="hour in hours" :value="hour" :key="hour">
-                    {{ hour }}
-                  </option>
-                </b-select>
+          <div class="column">
+            <div class="columns">
+              <div class="column is-3 mr-4">
+                <div class="columns is-vcentered" v-if="day.value === true">
+                  <div class="column is-5">
+                    <b-select
+                      v-model="day.fromHour"
+                      expanded
+                      @input="
+                        () => {
+                          onTimeChange(index);
+                        }
+                      "
+                      :disabled="readonly"
+                    >
+                      <option v-for="hour in hours" :value="hour" :key="hour">
+                        {{ hour }}
+                      </option>
+                    </b-select>
+                  </div>
+                  <div class="column has-text-centered">:</div>
+                  <div class="column is-5">
+                    <b-select
+                      v-model="day.fromMinute"
+                      expanded
+                      @input="
+                        () => {
+                          onTimeChange(index);
+                        }
+                      "
+                      :disabled="readonly"
+                    >
+                      <option
+                        v-for="minute in minutes"
+                        :value="minute"
+                        :key="minute"
+                      >
+                        {{ minute }}
+                      </option>
+                    </b-select>
+                  </div>
+                </div>
               </div>
-              <div class="column has-text-centered">:</div>
-              <div class="column is-5">
-                <b-select
-                  v-model="day.fromMinute"
-                  expanded
-                  @input="
-                    () => {
-                      onTimeChange(index);
-                    }
-                  "
-                  :disabled="readonly"
-                >
-                  <option
-                    v-for="minute in minutes"
-                    :value="minute"
-                    :key="minute"
-                  >
-                    {{ minute }}
-                  </option>
-                </b-select>
+              <div class="column is-3">
+                <div class="columns is-vcentered" v-if="day.value === true">
+                  <div class="column is-5">
+                    <b-select
+                      v-model="day.toHour"
+                      expanded
+                      @input="
+                        () => {
+                          onTimeChange(index);
+                        }
+                      "
+                      :disabled="readonly"
+                    >
+                      <option v-for="hour in hours" :value="hour" :key="hour">
+                        {{ hour }}
+                      </option>
+                    </b-select>
+                  </div>
+                  <div class="column has-text-centered">:</div>
+                  <div class="column is-5">
+                    <b-select
+                      v-model="day.toMinute"
+                      expanded
+                      @input="
+                        () => {
+                          onTimeChange(index);
+                        }
+                      "
+                      :disabled="readonly"
+                    >
+                      <option
+                        v-for="minute in minutes"
+                        :value="minute"
+                        :key="minute"
+                      >
+                        {{ minute }}
+                      </option>
+                    </b-select>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="column is-3">
-            <div class="columns is-vcentered" v-if="day.value === true">
-              <div class="column is-5">
-                <b-select
-                  v-model="day.toHour"
-                  expanded
-                  @input="
-                    () => {
-                      onTimeChange(index);
-                    }
-                  "
-                  :disabled="readonly"
-                >
-                  <option v-for="hour in hours" :value="hour" :key="hour">
-                    {{ hour }}
-                  </option>
-                </b-select>
-              </div>
-              <div class="column has-text-centered">:</div>
-              <div class="column is-5">
-                <b-select
-                  v-model="day.toMinute"
-                  expanded
-                  @input="
-                    () => {
-                      onTimeChange(index);
-                    }
-                  "
-                  :disabled="readonly"
-                >
-                  <option
-                    v-for="minute in minutes"
-                    :value="minute"
-                    :key="minute"
-                  >
-                    {{ minute }}
-                  </option>
-                </b-select>
-              </div>
+            <div class="has-text-danger error-massage">
+              {{ day.error }}
             </div>
           </div>
-          <div class="column"></div>
         </div>
-      </div>
-
-      <div>
-        {{ day.error }}
       </div>
     </div>
   </div>
@@ -226,7 +231,7 @@ export default {
           dayCopy.fromHour === dayCopy.toHour &&
           dayCopy.toMinute < dayCopy.fromMinute)
       ) {
-        day.error = `"From" time can't be later than "To" time`;
+        day.error = `"Start" time can't be later than "End" time`;
         this.onChange();
         return;
       }
@@ -236,7 +241,7 @@ export default {
         dayCopy.fromHour === dayCopy.toHour &&
         dayCopy.toMinute === dayCopy.fromMinute
       ) {
-        day.error = `"From" time can't be same as "To" time`;
+        day.error = `"Start" time can't be same as "End" time`;
         this.onChange();
         return;
       }

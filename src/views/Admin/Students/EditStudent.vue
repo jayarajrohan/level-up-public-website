@@ -231,11 +231,13 @@
         </div>
       </div>
     </b-modal>
+    <AppLoader :isLoading="isLoading" />
   </div>
 </template>
 
 <script>
 import "@/shared/validate.js";
+import AppLoader from "@/components/AppLoader/appLoader.vue";
 import {
   apiRequestManager,
   showFailureToast,
@@ -244,6 +246,9 @@ import {
 
 export default {
   name: "EditStudentsView",
+  components: {
+    AppLoader,
+  },
   data() {
     return {
       newPassword: "",
@@ -253,12 +258,15 @@ export default {
       isChangePassword: false,
       currentPassword: "",
       confirmNewPassword: "",
+      isLoading: false,
     };
   },
   methods: {
     getStudentDetails() {
+      this.isLoading = true;
       const studentId = this.$route.params.studentId;
       apiRequestManager("get", `/admin/student/${studentId}`, {}, {}, (res) => {
+        this.isLoading = false;
         if (res.status === 200) {
           this.username = res.data.student.username;
           this.studentName = res.data.student.name || "";
@@ -273,6 +281,7 @@ export default {
       });
     },
     onChangePassword() {
+      this.isLoading = true;
       const studentId = this.$route.params.studentId;
       apiRequestManager(
         "put",
@@ -280,6 +289,7 @@ export default {
         { password: this.newPassword, currentPassword: this.currentPassword },
         {},
         (res) => {
+          this.isLoading = false;
           if (res.status === 200) {
             showSuccessToast("Student password updated successfully");
             this.confirmNewPassword = "";
@@ -301,6 +311,7 @@ export default {
       );
     },
     onEditStudent() {
+      this.isLoading = true;
       const studentId = this.$route.params.studentId;
       apiRequestManager(
         "put",
@@ -312,6 +323,7 @@ export default {
         },
         {},
         (res) => {
+          this.isLoading = false;
           if (res.status === 200) {
             showSuccessToast("Student updated successfully");
             this.$router.push("/admin/dashboard/students").catch(() => []);

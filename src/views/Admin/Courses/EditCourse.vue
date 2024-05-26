@@ -64,11 +64,13 @@
         </div>
       </form></ValidationObserver
     >
+    <AppLoader :isLoading="isLoading" />
   </div>
 </template>
 
 <script>
 import "@/shared/validate.js";
+import AppLoader from "@/components/AppLoader/appLoader.vue";
 import {
   apiRequestManager,
   showFailureToast,
@@ -77,7 +79,10 @@ import {
 export default {
   name: "EditCourseView",
   data() {
-    return { description: "", courseName: "" };
+    return { description: "", courseName: "", isLoading: false };
+  },
+  components: {
+    AppLoader,
   },
   mounted() {
     this.getCourseDetails();

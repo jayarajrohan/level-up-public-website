@@ -44,12 +44,14 @@
     <transition name="route" mode="out-in">
       <router-view></router-view
     ></transition>
+    <AppLoader :isLoading="isLoading" />
   </div>
 </template>
 
 <script>
 import moment from "moment";
 import { apiRequestManager } from "@/util/util";
+import AppLoader from "@/components/AppLoader/appLoader.vue";
 export default {
   name: "DashboardView",
   data() {
@@ -57,13 +59,19 @@ export default {
       studentsCount: 0,
       tutorsCount: 0,
       coursesCount: 0,
+      isLoading: false,
     };
+  },
+  components: {
+    AppLoader,
   },
   methods: {
     moment,
     fetchDashboardViewDetails() {
+      this.isLoading = true;
       apiRequestManager("get", "/admin/dashboard/view", {}, {}, (res) => {
         if (res.status === 200) {
+          this.isLoading = false;
           this.studentsCount = res.data.dashboardDetails.studentsCount;
           this.coursesCount = res.data.dashboardDetails.coursesCount;
           this.tutorsCount = res.data.dashboardDetails.tutorsCount;

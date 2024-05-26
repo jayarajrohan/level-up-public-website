@@ -33,11 +33,18 @@ div
           </div>
         </div>
         <div style="margin-inline: 100px" class="mt-4">
-          <p class="has-text-primary is-size-4 mt-4">Viewers Details</p>
-          <b-message type="is-info" has-icon class="mt-4 is-size-5">
+          <p class="has-text-primary is-size-4 mt-4">
+            Students who viewed your profile
+          </p>
+          <b-message
+            type="is-info"
+            has-icon
+            class="mt-4 is-size-5"
+            v-if="viewersData.length === 0"
+          >
             Details of Students who viewed your profile will appear here
           </b-message>
-          <div class="mt-4">
+          <div class="mt-4" v-if="viewersData.length !== 0">
             <AppTable
               :data="viewersData"
               :columns="viewersHeader"
@@ -48,68 +55,56 @@ div
         </div>
       </div>
     </transition>
+    <AppLoader :isLoading="isLoading" />
   </div>
 </template>
 
 <script>
-import AppTable from "@/shared/appTable.vue";
-
+import AppTable from "@/components/AppTable/appTable.vue";
+import AppLoader from "@/components/AppLoader/appLoader.vue";
 import { apiRequestManager, showSuccessToast } from "@/util/util";
 
 export default {
   name: "viewersView",
   components: {
     AppTable,
+    AppLoader,
   },
   data() {
     const viewersHeader = [
       {
-        field: "userName",
-        label: "User Name",
+        field: "id",
+        label: "ID",
         sortable: true,
       },
       {
-        field: "email",
-        label: "Email",
+        field: "recentDate",
+        label: "Recent Date",
         sortable: true,
       },
       {
-        field: "date",
-        label: "Date",
+        field: "count",
+        label: "Count",
         sortable: false,
       },
-    ];
-    const viewersData = [
       {
-        id: 0,
-        userName: "Sarmisha",
-        email: "sarmi@gmail.com",
-        date: "2024-1-05",
-      },
-      {
-        id: 1,
-        userName: "Rohan",
-        email: "rohan@gmail.com",
-        date: "2024-1-05",
-      },
-      {
-        id: 2,
-        userName: "Renota",
-        email: "renota@gmail.com",
-        date: "2024-1-05",
-      },
-      {
-        id: 3,
-        userName: "Jeevan",
-        email: "jeevan@gmail.com",
-        date: "2024-1-05",
+        field: "button",
+        label: "Button",
       },
     ];
-    return { viewersData, viewersHeader, isModalActive: false };
+
+    return {
+      viewersData: [],
+      viewersHeader,
+      isModalActive: false,
+      isLoading: false,
+    };
   },
   methods: {
     onLogout() {
+      this.isLoading = true;
       apiRequestManager("get", "/tutor/logout", {}, {}, (res) => {
+        this.isLoading = false;
         if (res.status === 200) {
           showSuccessToast("Logged out successfully");
           localStorage.removeItem("token");
@@ -117,6 +112,37 @@ export default {
         }
       });
     },
+    fetchViewedStudentDetails() {
+      this.isLoading = true;
+      apiRequestManager("get", "/tutor/view-students", {}, {}, (res) => {
+        this.isLoading = false;
+        if (res.status === 200) {
+          this.viewersData = res.data.students.map((student) => {
+            return {
+              id: student.id,
+              recentDate: student.recentDate,
+              count: student.count,
+              button: [
+                {
+                  text: "View",
+                  onClick: () => {
+                    this.$router
+                      .push(`/tutor/student-detail/${student.id}`)
+                      .catch(() => []);
+                  },
+                  icon: "",
+                  type: "is-primary",
+                },
+              ],
+            };
+          });
+          return;
+        }
+      });
+    },
+  },
+  mounted() {
+    this.fetchViewedStudentDetails();
   },
 };
 </script>

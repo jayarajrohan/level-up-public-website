@@ -2,6 +2,7 @@ import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
 import Buefy from "buefy";
+import "vue-loading-overlay/dist/vue-loading.css";
 import "./myBuefyStyles/myBuefyStyles.scss";
 import MenuIcon from "vue-material-design-icons/Menu.vue";
 import { ValidationObserver, ValidationProvider } from "vee-validate";

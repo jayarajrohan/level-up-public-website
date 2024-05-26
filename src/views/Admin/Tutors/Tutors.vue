@@ -22,7 +22,7 @@
             >
           </div>
         </div>
-        <div class="mt-4 mx-4">
+        <div class="mt-4 mx-4" v-if="tutorData.length !== 0">
           <AppTable
             :data="tutorData"
             :columns="tutorHeader"
@@ -30,6 +30,14 @@
             rowClassTwo="striped-table-color"
           />
         </div>
+
+        <div
+          class="mt-4 mx-4 is-flex is-justify-content-center is-align-content-center"
+          v-if="tutorData.length === 0"
+        >
+          No tutors available
+        </div>
+
         <b-modal
           v-model="isModalActive"
           scroll="keep"
@@ -87,11 +95,13 @@
     <transition name="route" mode="out-in">
       <router-view></router-view
     ></transition>
+    <AppLoader :isLoading="isLoading" />
   </div>
 </template>
 
 <script>
-import AppTable from "@/shared/appTable.vue";
+import AppTable from "@/components/AppTable/appTable.vue";
+import AppLoader from "@/components/AppLoader/appLoader.vue";
 import {
   apiRequestManager,
   showFailureToast,
@@ -101,6 +111,7 @@ export default {
   name: "TutorsView",
   components: {
     AppTable,
+    AppLoader,
   },
   data() {
     const tutorHeader = [
@@ -149,11 +160,14 @@ export default {
       isModalActive: false,
       deleteUserName: "",
       deleteUserId: "",
+      isLoading: false,
     };
   },
   methods: {
     fetchTutorDetails() {
+      this.isLoading = true;
       apiRequestManager("get", "/admin/tutors", {}, {}, (res) => {
+        this.isLoading = false;
         if (res.status === 200) {
           this.tutorData = res.data.tutors.map((tutor) => {
             return {
@@ -209,12 +223,14 @@ export default {
       });
     },
     onDeleteTutor() {
+      this.isLoading = true;
       apiRequestManager(
         "delete",
         `/admin/tutor/delete/${this.deleteUserId}`,
         {},
         {},
         (res) => {
+          this.isLoading = false;
           if (res.status === 200) {
             this.fetchTutorDetails();
             showSuccessToast("Tutor deleted successfully");

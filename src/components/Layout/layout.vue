@@ -40,27 +40,32 @@
         </div>
       </div>
     </div>
+    <AppLoader :isLoading="isLoading" />
   </div>
 </template>
 
 <script>
 import { dashboardChildrenRoutes } from "@/router/router.js";
 import { apiRequestManager, showSuccessToast } from "@/util/util";
-
-import MenuItem from "./menuItem.vue";
+import AppLoader from "@/components/AppLoader/appLoader.vue";
+import MenuItem from "../MenuItem/menuItem.vue";
 export default {
   name: "DashboardLayout",
   components: {
     MenuItem,
+    AppLoader,
   },
   data() {
     return {
       dashboardChildrenRoutes,
+      isLoading: false,
     };
   },
   methods: {
     onLogout() {
+      this.isLoading = true;
       apiRequestManager("get", "/admin/logout", {}, {}, (res) => {
+        this.isLoading = false;
         if (res.status === 200) {
           showSuccessToast("Logged out successfully");
           localStorage.removeItem("token");

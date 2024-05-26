@@ -87,12 +87,14 @@
           </form></ValidationObserver
         >
       </div>
+      <AppLoader :isLoading="isLoading" />
     </div>
   </div>
 </template>
 
 <script>
 import "@/shared/validate.js";
+import AppLoader from "@/components/AppLoader/appLoader.vue";
 import {
   apiRequestManager,
   showSuccessToast,
@@ -104,8 +106,12 @@ export default {
   props: {
     msg: String,
   },
+  components: {
+    AppLoader,
+  },
   data() {
     return {
+      isLoading: false,
       password: "",
       role: this.getRole(),
       username: "",
@@ -125,6 +131,7 @@ export default {
       }
     },
     onLogin() {
+      this.isLoading = true;
       if (this.role === "admin") {
         apiRequestManager(
           "post",
@@ -135,6 +142,7 @@ export default {
           },
           {},
           (res) => {
+            this.isLoading = false;
             if (res.status === 200) {
               showSuccessToast("Login success");
               localStorage.setItem("role", res.data.role);
