@@ -72,7 +72,7 @@ export default {
 .font-size-one {
   font-size: 20px;
 }
-.cover-style {
+.hover-style {
   cursor: pointer;
 }
 .font-style-two {

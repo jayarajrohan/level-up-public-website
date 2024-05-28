@@ -5,7 +5,14 @@
         class="column is-2 sidebar-style"
         style="background-color: rgba(7, 32, 93, 1)"
       >
-        <div class="is-pulled-right mr-1">
+        <div
+          class="is-pulled-right mr-1 hover-style"
+          @click="
+            () => {
+              $router.push(`/admin/dashboard`);
+            }
+          "
+        >
           <div class="logo">Level-Up</div>
         </div>
 
@@ -25,7 +32,7 @@
               <img
                 src="@/assets/images/logoutButton.webp"
                 alt="Log Out"
-                class="cover-style"
+                class="hover-style"
                 width="50px"
                 @click="onLogout"
               />

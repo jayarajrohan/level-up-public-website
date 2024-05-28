@@ -8,7 +8,7 @@
         <img
           src="@/assets/images/Profile.webp"
           alt="profile"
-          class="cover-style mt-2 border-style"
+          class="hover-style mt-2 border-style"
           width="44px"
           @click="
             () => {
@@ -22,7 +22,7 @@
           <img
             src="@/assets/images/logoutButton.webp"
             alt="Log Out"
-            class="cover-style"
+            class="hover-style"
             width="50px"
             @click="onLogout"
           />
