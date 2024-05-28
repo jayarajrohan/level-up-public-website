@@ -9,7 +9,7 @@
           class="is-pulled-right mr-1 hover-style"
           @click="
             () => {
-              $router.push(`/admin/dashboard`);
+              $router.push(`/admin/dashboard`).catch(() => []);
             }
           "
         >
