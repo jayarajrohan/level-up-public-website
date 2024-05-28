@@ -2,7 +2,16 @@
   <div>
     <div class="columns top-bar py-1 px-2">
       <div class="column">
-        <div class="logo">Level-Up</div>
+        <div
+          class="logo hover-style"
+          @click="
+            () => {
+              $router.push(`/student/search-tutor`).catch(() => []);
+            }
+          "
+        >
+          Level-Up
+        </div>
       </div>
       <div class="column is-narrow">
         <img

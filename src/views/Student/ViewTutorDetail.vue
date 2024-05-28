@@ -2,7 +2,16 @@
   <div>
     <div class="columns top-bar py-1 px-2">
       <div class="column">
-        <div class="logo">Level-Up</div>
+        <div
+          class="logo hover-style"
+          @click="
+            () => {
+              $router.push(`/student/search-tutor`).catch(() => []);
+            }
+          "
+        >
+          Level-Up
+        </div>
       </div>
       <div class="column is-narrow">
         <img
@@ -209,9 +218,9 @@
                   </div>
                   <div
                     class="column is-narrow mr-4 pointer-style"
-                    v-if="linkedIn"
+                    v-if="youtube"
                   >
-                    <a :href="linkedIn" target="_blank">
+                    <a :href="youtube" target="_blank">
                       <font-awesome-icon
                         :icon="['fab', 'youtube']"
                         style="font-size: 40px; color: #ff0000"
@@ -219,9 +228,9 @@
                   </div>
                   <div
                     class="column is-narrow mr-4 pointer-style"
-                    v-if="youtube"
+                    v-if="linkedIn"
                   >
-                    <a :href="youtube" target="_blank">
+                    <a :href="linkedIn" target="_blank">
                       <font-awesome-icon
                         :icon="['fab', 'linkedin']"
                         style="font-size: 40px; color: #0a66c2"

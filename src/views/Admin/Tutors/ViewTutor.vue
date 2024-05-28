@@ -165,18 +165,18 @@
                       style="font-size: 40px; color: #1da1f2"
                   /></a>
                 </div>
-                <div
-                  class="column is-narrow mr-4 pointer-style"
-                  v-if="linkedIn"
-                >
-                  <a :href="linkedIn" target="_blank">
+                <div class="column is-narrow mr-4 pointer-style" v-if="youtube">
+                  <a :href="youtube" target="_blank">
                     <font-awesome-icon
                       :icon="['fab', 'youtube']"
                       style="font-size: 40px; color: #ff0000"
                   /></a>
                 </div>
-                <div class="column is-narrow mr-4 pointer-style" v-if="youtube">
-                  <a :href="youtube" target="_blank">
+                <div
+                  class="column is-narrow mr-4 pointer-style"
+                  v-if="linkedIn"
+                >
+                  <a :href="linkedIn" target="_blank">
                     <font-awesome-icon
                       :icon="['fab', 'linkedin']"
                       style="font-size: 40px; color: #0a66c2"
