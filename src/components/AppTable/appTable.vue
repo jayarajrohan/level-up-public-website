@@ -3,7 +3,7 @@
     <b-table
       :data="data ? data : []"
       :class="tableStyle"
-      height="500px"
+      height="auto"
       :sticky-header="stickyHeaders"
       :mobile-cards="hasMobileCards"
       :row-class="(row, index) => (index % 2 === 0 ? rowClassOne : rowClassTwo)"

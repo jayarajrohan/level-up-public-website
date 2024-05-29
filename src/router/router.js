@@ -1,81 +1,78 @@
 export const dashboardChildrenRoutes = [
   {
     name: "Dashboard",
-    path: "/dashboard",
-    component: () => import("@/components/Admin/Dashboard.vue"),
-    meta: { requiresAuth: true },
-  },
-
-  {
-    name: "Students",
-    path: "/students",
-    component: () => import("@/components/Admin/Students/Students.vue"), //
-    meta: { requiresAuth: true },
-    childSelectableList: ["Create Student", "Edit Student"],
+    path: "/admin/dashboard",
+    component: () => import("@/views/Admin/Dashboard.vue"),
     children: [
       {
-        name: "Create Student",
-        path: "/students/create-student",
-        component: () =>
-          import("@/components/Admin/Students/CreateStudent.vue"),
-        hideFromSideBar: true,
-        meta: { requiresAuth: true },
-      },
+        name: "Students",
+        path: "/admin/dashboard/students",
+        component: () => import("@/views/Admin/Students/Students.vue"),
+        childSelectableList: ["Create Student", "Edit Student"],
+        children: [
+          {
+            name: "Create Student",
+            path: "/admin/dashboard/students/create",
+            component: () => import("@/views/Admin/Students/CreateStudent.vue"),
+            hideFromSideBar: true,
+          },
 
-      {
-        name: "Edit Student",
-        path: "/students/edit-student",
-        component: () => import("@/components/Admin/Students/EditStudent.vue"),
-        hideFromSideBar: true,
-        meta: { requiresAuth: true },
+          {
+            name: "Edit Student",
+            path: "/admin/dashboard/students/edit/:studentId",
+            component: () => import("@/views/Admin/Students/EditStudent.vue"),
+            hideFromSideBar: true,
+          },
+        ],
       },
-    ],
-  },
-  {
-    name: "Tutors",
-    path: "/tutors",
-    component: () => import("@/components/Admin/Tutors/Tutors.vue"), //
-    meta: { requiresAuth: true },
-    childSelectableList: ["Create Tutor", "Edit Tutor"],
-    children: [
       {
-        name: "Create Tutor",
-        path: "/tutors/create-tutor",
-        component: () => import("@/components/Admin/Tutors/CreateTutor.vue"),
-        hideFromSideBar: true,
-        meta: { requiresAuth: true },
-      },
+        name: "Tutors",
+        path: "/admin/dashboard/tutors",
+        component: () => import("@/views/Admin/Tutors/Tutors.vue"),
+        childSelectableList: ["Create Tutor", "Edit Tutor", "View Tutor"],
+        children: [
+          {
+            name: "Create Tutor",
+            path: "/admin/dashboard/tutors/create",
+            component: () => import("@/views/Admin/Tutors/CreateTutor.vue"),
+            hideFromSideBar: true,
+          },
 
-      {
-        name: "Edit Tutor",
-        path: "/tutors/edit-tutor",
-        component: () => import("@/components/Admin/Tutors/EditTutor.vue"),
-        hideFromSideBar: true,
-        meta: { requiresAuth: true },
-      },
-    ],
-  },
-  {
-    name: "Courses",
-    path: "/courses",
-    component: () => import("@/components/Admin/Courses/Courses.vue"), //
-    meta: { requiresAuth: true },
-    childSelectableList: ["Create Course", "Edit Course"],
-    children: [
-      {
-        name: "Create Course",
-        path: "/courses/create-course",
-        component: () => import("@/components/Admin/Courses/CreateCourse.vue"),
-        hideFromSideBar: true,
-        meta: { requiresAuth: true },
-      },
+          {
+            name: "Edit Tutor",
+            path: "/admin/dashboard/tutors/edit/:tutorId",
+            component: () => import("@/views/Admin/Tutors/EditTutor.vue"),
+            hideFromSideBar: true,
+          },
 
+          {
+            name: "View Tutor",
+            path: "/admin/dashboard/tutors/view/:tutorId",
+            component: () => import("@/views/Admin/Tutors/ViewTutor.vue"),
+            hideFromSideBar: true,
+          },
+        ],
+      },
       {
-        name: "Edit Course",
-        path: "/courses/edit-course",
-        component: () => import("@/components/Admin/Courses/EditCourse.vue"),
-        hideFromSideBar: true,
-        meta: { requiresAuth: true },
+        name: "Courses",
+        path: "/admin/dashboard/courses",
+        component: () => import("@/views/Admin/Courses/Courses.vue"),
+        childSelectableList: ["Create Course", "Edit Course"],
+        children: [
+          {
+            name: "Create Course",
+            path: "/admin/dashboard/courses/create",
+            component: () => import("@/views/Admin/Courses/CreateCourse.vue"),
+            hideFromSideBar: true,
+          },
+
+          {
+            name: "Edit Course",
+            path: "/admin/dashboard/courses/edit/:courseId",
+            component: () => import("@/views/Admin/Courses/EditCourse.vue"),
+            hideFromSideBar: true,
+          },
+        ],
       },
     ],
   },
@@ -85,14 +82,13 @@ const routes = [
   {
     path: "/",
     name: "Login",
-    component: () => import("@/components/Login.vue"),
+    component: () => import("@/views/Login.vue"),
   },
 
   {
-    path: "/dashboard-home",
+    path: "/admin/dashboard-home",
     name: "Dashboard Home",
-    component: () => import("@/shared/layout.vue"),
-    meta: { requiresAuth: true },
+    component: () => import("@/components/Layout/layout.vue"),
     children: [
       ...dashboardChildrenRoutes.map((route) => {
         return {
@@ -103,6 +99,55 @@ const routes = [
         };
       }),
     ],
+  },
+  {
+    path: "/tutor",
+    name: "Tutor",
+    component: () => import("@/views/Tutor/Tutor.vue"),
+    children: [
+      {
+        name: "Tutor Viewed Students",
+        path: "/tutor/students-viewed",
+        component: () => import("@/views/Tutor/ViewersScreen.vue"),
+      },
+      {
+        name: "Tutor Profile",
+        path: "/tutor/profile",
+        component: () => import("@/views/Tutor/ProfileDetail.vue"),
+      },
+      {
+        name: "Student Detail",
+        path: "/tutor/student-detail/:studentId",
+        component: () => import("@/views/Tutor/StudentDetail.vue"),
+      },
+    ],
+  },
+  {
+    path: "/student",
+    name: "Student",
+    component: () => import("@/views/Student/Student.vue"),
+    children: [
+      {
+        name: "Student Profile",
+        path: "/student/profile",
+        component: () => import("@/views/Student/StudentProfile.vue"),
+      },
+      {
+        name: "Search Tutor",
+        path: "/student/search-tutor",
+        component: () => import("@/views/Student/SearchTutor.vue"),
+      },
+      {
+        name: "Student Tutor View",
+        path: "/student/tutor-details/:tutorId",
+        component: () => import("@/views/Student/ViewTutorDetail.vue"),
+      },
+    ],
+  },
+  {
+    path: "*",
+    component: () => import("@/views/Login.vue"),
+    redirect: "/",
   },
 ];
 export default routes;

@@ -13,14 +13,16 @@
               expanded
               @click="
                 () => {
-                  $router.push(`/tutors/create-tutor`);
+                  $router
+                    .push(`/admin/dashboard/tutors/create`)
+                    .catch(() => []);
                 }
               "
               >Create Tutor</b-button
             >
           </div>
         </div>
-        <div class="mt-4 mx-4">
+        <div class="mt-4 mx-4" v-if="tutorData.length !== 0">
           <AppTable
             :data="tutorData"
             :columns="tutorHeader"
@@ -28,6 +30,14 @@
             rowClassTwo="striped-table-color"
           />
         </div>
+
+        <div
+          class="mt-4 mx-4 is-flex is-justify-content-center is-align-content-center"
+          v-if="tutorData.length === 0"
+        >
+          No tutors available
+        </div>
+
         <b-modal
           v-model="isModalActive"
           scroll="keep"
@@ -54,7 +64,7 @@
                 />
                 <p class="has-text-danger is-size-4">Delete</p>
 
-                <p>Are you sure you want to delete _________?</p>
+                <p>Are you sure you want to delete {{ deleteUserName }}?</p>
               </div>
               <div
                 class="has-text-centered mt-5"
@@ -72,7 +82,7 @@
                 <b-button
                   type="is-danger"
                   class="py-5 mr-5"
-                  @click="isModalActive = false"
+                  @click="onDeleteTutor"
                   style="width: 200px !important"
                   >Delete
                 </b-button>
@@ -85,15 +95,23 @@
     <transition name="route" mode="out-in">
       <router-view></router-view
     ></transition>
+    <AppLoader :isLoading="isLoading" />
   </div>
 </template>
 
 <script>
-import AppTable from "@/shared/appTable.vue";
+import AppTable from "@/components/AppTable/appTable.vue";
+import AppLoader from "@/components/AppLoader/appLoader.vue";
+import {
+  apiRequestManager,
+  showFailureToast,
+  showSuccessToast,
+} from "@/util/util";
 export default {
   name: "TutorsView",
   components: {
     AppTable,
+    AppLoader,
   },
   data() {
     const tutorHeader = [
@@ -105,26 +123,28 @@ export default {
         sortable: true,
       },
       {
+        field: "userName",
+        label: "Username",
+        tableHeaderAttributes: this.paymentHeadShow,
+        tableDataAttributes: this.columnTdAttrs,
+        sortable: true,
+      },
+      {
         field: "name",
         label: "Name",
         tableHeaderAttributes: this.paymentHeadShow,
         tableDataAttributes: this.columnTdAttrs,
         sortable: true,
       },
+
       {
-        field: "expertise",
-        label: "Expertise",
+        field: "email",
+        label: "Email",
         tableHeaderAttributes: this.paymentHeadShow,
         tableDataAttributes: this.columnTdAttrs,
         sortable: true,
       },
-      {
-        field: "availability",
-        label: "Availability",
-        tableHeaderAttributes: this.paymentHeadShow,
-        tableDataAttributes: this.columnTdAttrs,
-        sortable: true,
-      },
+
       {
         field: "button",
         label: "Action",
@@ -133,55 +153,99 @@ export default {
         sortable: false,
       },
     ];
-    const tutorData = [
-      {
-        id: 0,
-        name: "Rohan",
-        expertise: "IT",
-        availability: "Sunday",
-        button: [
-          {
-            text: "Edit",
-            onClick: () => {
-              this.$router.push(`/tutors/edit-tutor`);
-            },
-            icon: "",
-            type: "is-primary",
-          },
-          {
-            text: "Delete",
-            onClick: () => {
-              this.isModalActive = true;
-            },
-            type: "is-danger",
-          },
-        ],
-      },
-      {
-        id: 1,
-        name: "Sarmisha",
-        expertise: "Maths",
-        availability: "Saturday ",
-        button: [
-          {
-            text: "Edit",
-            onClick: () => {
-              this.$router.push(`/tutors/edit-tutor`);
-            },
-            icon: "",
-            type: "is-primary",
-          },
-          {
-            text: "Delete",
-            onClick: () => {
-              this.isModalActive = true;
-            },
-            type: "is-danger",
-          },
-        ],
-      },
-    ];
-    return { tutorHeader, tutorData, isModalActive: false };
+
+    return {
+      tutorHeader,
+      tutorData: [],
+      isModalActive: false,
+      deleteUserName: "",
+      deleteUserId: "",
+      isLoading: false,
+    };
+  },
+  methods: {
+    fetchTutorDetails() {
+      this.isLoading = true;
+      apiRequestManager("get", "/admin/tutors", {}, {}, (res) => {
+        this.isLoading = false;
+        if (res.status === 200) {
+          this.tutorData = res.data.tutors.map((tutor) => {
+            return {
+              id: tutor._id,
+              userName: tutor.username,
+              email: tutor.email || "",
+              name: tutor.name || "",
+              button: [
+                {
+                  text: "View",
+                  onClick: () => {
+                    this.$router
+                      .push(`/admin/dashboard/tutors/view/${tutor._id}`)
+                      .catch(() => []);
+                  },
+                  icon: "",
+                  type: "is-primary",
+                },
+                {
+                  text: "Edit",
+                  onClick: () => {
+                    this.$router
+                      .push(`/admin/dashboard/tutors/edit/${tutor._id}`)
+                      .catch(() => []);
+                  },
+                  icon: "",
+                  type: "is-primary",
+                },
+                {
+                  text: "Delete",
+                  onClick: () => {
+                    this.deleteUserId = tutor._id;
+                    this.deleteUserName = tutor.username;
+                    this.isModalActive = true;
+                  },
+                  type: "is-danger",
+                },
+              ],
+            };
+          });
+          return;
+        }
+
+        if (res.status === 400) {
+          showFailureToast("Validation failed in one of the fields");
+          return;
+        }
+
+        if (res.status === 409) {
+          showFailureToast("Username already exist");
+          return;
+        }
+      });
+    },
+    onDeleteTutor() {
+      this.isLoading = true;
+      apiRequestManager(
+        "delete",
+        `/admin/tutor/delete/${this.deleteUserId}`,
+        {},
+        {},
+        (res) => {
+          this.isLoading = false;
+          if (res.status === 200) {
+            this.fetchTutorDetails();
+            showSuccessToast("Tutor deleted successfully");
+            this.isModalActive = false;
+            return;
+          }
+        }
+      );
+    },
+  },
+  watch: {
+    $route: "fetchTutorDetails",
+  },
+  mounted() {
+    this.fetchTutorDetails();
   },
 };
 </script>

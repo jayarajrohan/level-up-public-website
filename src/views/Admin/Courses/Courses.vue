@@ -13,20 +13,28 @@
               expanded
               @click="
                 () => {
-                  $router.push(`/courses/create-course`);
+                  $router
+                    .push(`/admin/dashboard/courses/create`)
+                    .catch(() => []);
                 }
               "
               >Create Course</b-button
             >
           </div>
         </div>
-        <div class="mt-4 mx-4">
+        <div class="mt-4 mx-4" v-if="courseData.length !== 0">
           <AppTable
             :data="courseData"
             :columns="courseHeader"
             row-class-one="striped-table-color-2"
             rowClassTwo="striped-table-color"
           />
+        </div>
+        <div
+          class="mt-4 mx-4 is-flex is-justify-content-center is-align-content-center"
+          v-if="courseData.length === 0"
+        >
+          No courses available
         </div>
         <b-modal
           v-model="isModalActive"
@@ -54,7 +62,7 @@
                 />
                 <p class="has-text-danger is-size-4">Delete</p>
 
-                <p>Are you sure you want to delete _________?</p>
+                <p>Are you sure you want to delete {{ deleteCourseName }}?</p>
               </div>
               <div
                 class="has-text-centered mt-5"
@@ -72,7 +80,7 @@
                 <b-button
                   type="is-danger"
                   class="py-5 mr-5"
-                  @click="isModalActive = false"
+                  @click="onDeleteCourse"
                   style="width: 200px !important"
                   >Delete
                 </b-button>
@@ -85,15 +93,23 @@
     <transition name="route" mode="out-in">
       <router-view></router-view
     ></transition>
+    <AppLoader :isLoading="isLoading" />
   </div>
 </template>
 
 <script>
-import AppTable from "@/shared/appTable.vue";
+import AppTable from "@/components/AppTable/appTable.vue";
+import AppLoader from "@/components/AppLoader/appLoader.vue";
+import {
+  apiRequestManager,
+  showFailureToast,
+  showSuccessToast,
+} from "@/util/util";
 export default {
   name: "CoursesView",
   components: {
     AppTable,
+    AppLoader,
   },
   data() {
     const courseHeader = [
@@ -127,54 +143,89 @@ export default {
         sortable: false,
       },
     ];
-    const courseData = [
-      {
-        id: 0,
-        courseName: "Maths",
-        description: "For Speed Leaners",
-        button: [
-          {
-            text: "Edit",
-            onClick: () => {
-              this.$router.push(`/courses/edit-course`);
-            },
-            icon: "",
-            type: "is-primary",
-          },
-          {
-            text: "Delete",
-            onClick: () => {
-              this.isModalActive = true;
-            },
-            type: "is-danger",
-          },
-        ],
-      },
-      {
-        id: 1,
-        courseName: "IT",
-        description: "For Slow Leaners",
 
-        button: [
-          {
-            text: "Edit",
-            onClick: () => {
-              this.$router.push(`/courses/edit-course`);
-            },
-            icon: "",
-            type: "is-primary",
-          },
-          {
-            text: "Delete",
-            onClick: () => {
-              this.isModalActive = true;
-            },
-            type: "is-danger",
-          },
-        ],
-      },
-    ];
-    return { courseHeader, courseData, isModalActive: false };
+    return {
+      courseHeader,
+      courseData: [],
+      isModalActive: false,
+      deleteCourseName: "",
+      deleteCourseId: "",
+      isLoading: false,
+    };
+  },
+  methods: {
+    fetchCourseDetails() {
+      this.isLoading = true;
+      apiRequestManager("get", "/admin/courses", {}, {}, (res) => {
+        this.isLoading = false;
+        if (res.status === 200) {
+          this.courseData = res.data.courses.map((course) => {
+            return {
+              id: course._id,
+              courseName: course.courseName,
+              description: course.description || "",
+
+              button: [
+                {
+                  text: "Edit",
+                  icon: "",
+                  type: "is-primary",
+                  onClick: () => {
+                    this.$router
+                      .push(`/admin/dashboard/courses/edit/${course._id}`)
+                      .catch(() => []);
+                  },
+                },
+                {
+                  text: "Delete",
+                  onClick: () => {
+                    this.deleteCourseId = course._id;
+                    this.deleteCourseName = course.courseName;
+                    this.isModalActive = true;
+                  },
+                  type: "is-danger",
+                },
+              ],
+            };
+          });
+          return;
+        }
+
+        if (res.status === 400) {
+          showFailureToast("Validation failed in one of the fields");
+          return;
+        }
+
+        if (res.status === 409) {
+          showFailureToast("Username already exist");
+          return;
+        }
+      });
+    },
+    onDeleteCourse() {
+      this.isLoading = true;
+      apiRequestManager(
+        "delete",
+        `/admin/course/delete/${this.deleteCourseId}`,
+        {},
+        {},
+        (res) => {
+          this.isLoading = false;
+          if (res.status === 200) {
+            this.fetchCourseDetails();
+            showSuccessToast("Course deleted successfully");
+            this.isModalActive = false;
+            return;
+          }
+        }
+      );
+    },
+  },
+  watch: {
+    $route: "fetchCourseDetails",
+  },
+  mounted() {
+    this.fetchCourseDetails();
   },
 };
 </script>

@@ -5,15 +5,17 @@
         class="column is-2 sidebar-style"
         style="background-color: rgba(7, 32, 93, 1)"
       >
-        <div class="is-pulled-right mr-1">
+        <div
+          class="is-pulled-right mr-1 hover-style"
+          @click="
+            () => {
+              $router.push(`/admin/dashboard`).catch(() => []);
+            }
+          "
+        >
           <div class="logo">Level-Up</div>
         </div>
-        <!-- <img
-          src="@/assets/images/graduation.webp"
-          alt="Log Out"
-          width="185px"
-          class="my-4 ml-6"
-        /> -->
+
         <div class="sec font-style-two">
           <MenuItem
             v-for="(route, index) in dashboardChildrenRoutes"
@@ -30,13 +32,9 @@
               <img
                 src="@/assets/images/logoutButton.webp"
                 alt="Log Out"
-                class="cover-style"
+                class="hover-style"
                 width="50px"
-                @click="
-                  () => {
-                    $router.push(`/`);
-                  }
-                "
+                @click="onLogout"
               />
             </b-tooltip>
           </div>
@@ -49,22 +47,39 @@
         </div>
       </div>
     </div>
+    <AppLoader :isLoading="isLoading" />
   </div>
 </template>
 
 <script>
 import { dashboardChildrenRoutes } from "@/router/router.js";
-
-import MenuItem from "./menuItem.vue";
+import { apiRequestManager, showSuccessToast } from "@/util/util";
+import AppLoader from "@/components/AppLoader/appLoader.vue";
+import MenuItem from "../MenuItem/menuItem.vue";
 export default {
   name: "DashboardLayout",
   components: {
     MenuItem,
+    AppLoader,
   },
   data() {
     return {
       dashboardChildrenRoutes,
+      isLoading: false,
     };
+  },
+  methods: {
+    onLogout() {
+      this.isLoading = true;
+      apiRequestManager("get", "/admin/logout", {}, {}, (res) => {
+        this.isLoading = false;
+        if (res.status === 200) {
+          showSuccessToast("Logged out successfully");
+          localStorage.removeItem("token");
+          this.$router.push(`/`).catch(() => []);
+        }
+      });
+    },
   },
 };
 </script>
@@ -91,18 +106,5 @@ export default {
 .foot {
   position: absolute;
   bottom: 2px;
-}
-.top-bar {
-  background: var(--white, #fff);
-  box-shadow: 0px 2px 16px 0px rgba(0, 0, 0, 0.1);
-}
-.logo {
-  background-color: #006fb7;
-  width: 200px;
-  font-size: 25px;
-  padding-block: 5px;
-  margin-top: 7px;
-  text-align: end;
-  border-radius: 15px 0;
 }
 </style>
