@@ -115,6 +115,7 @@ import AppTable from "@/components/AppTable/appTable.vue";
 import AvailableDayAndTime from "@/components/AvailableDayAndTime/AvailableDayAndTime.vue";
 import AppLoader from "@/components/AppLoader/appLoader.vue";
 import { apiRequestManager, showSuccessToast } from "@/util/util";
+import moment from "moment";
 export default {
   name: "FindTutor",
   components: {
@@ -165,6 +166,67 @@ export default {
     };
   },
   methods: {
+    requestActionLabel(currentStatus) {
+      const seconds = moment(new Date()).diff(
+        moment(currentStatus.requestDate),
+        "seconds"
+      );
+
+      if (
+        !currentStatus ||
+        (currentStatus.requestStatus === "rejected" && seconds > 604800)
+      ) {
+        return "Connect";
+      }
+
+      if (currentStatus.requestStatus === "accepted") {
+        return "Connection 🤝";
+      }
+
+      if (currentStatus.requestStatus === "pending") {
+        return "Pending";
+      }
+
+      const duration = moment.duration(604800 - seconds, "seconds");
+
+      const days = Math.floor(duration.asDays());
+      const hours = duration.hours();
+      const minutes = duration.minutes();
+      const secs = duration.seconds();
+
+      const formattedDuration = `${days} Days, ${hours} Hours, ${minutes} Minutes and ${secs} Seconds`;
+
+      return `Wait ${formattedDuration} to send a new request`;
+    },
+
+    requestAction(currentStatus, tutorId) {
+      if (
+        currentStatus &&
+        (currentStatus.requestStatus !== "rejected" || seconds <= 604800)
+      ) {
+        return;
+      }
+
+      this.isLoading = true;
+      const seconds = moment(new Date()).diff(
+        moment(currentStatus.requestDate),
+        "seconds"
+      );
+
+      apiRequestManager(
+        "get",
+        `/student/connect-tutor/${tutorId}`,
+        {},
+        {},
+        (res) => {
+          this.isLoading = false;
+          if (res.status === 200) {
+            showSuccessToast("Connection request sent successfully");
+            this.onSearchTutor();
+          }
+        }
+      );
+    },
     availabilityDetail(value) {
       this.availability = value;
     },
@@ -200,6 +262,17 @@ export default {
                 email: tutor.email || "",
                 name: tutor.name || "",
                 button: [
+                  {
+                    text: this.requestActionLabel(tutor.requestStatusWithTutor),
+                    onClick: () => {
+                      this.requestAction(
+                        tutor.requestStatusWithTutor,
+                        tutor._id
+                      );
+                    },
+                    icon: "",
+                    type: "is-primary",
+                  },
                   {
                     text: "View",
                     onClick: () => {

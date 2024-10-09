@@ -176,6 +176,7 @@ export default {
           },
           {},
           (res) => {
+            this.isLoading = false;
             if (res.status === 200) {
               showSuccessToast("Login success");
               localStorage.setItem("role", res.data.role);
@@ -208,6 +209,7 @@ export default {
           },
           {},
           (res) => {
+            this.isLoading = false;
             if (res.status === 200) {
               showSuccessToast("Login success");
               localStorage.setItem("role", res.data.role);
