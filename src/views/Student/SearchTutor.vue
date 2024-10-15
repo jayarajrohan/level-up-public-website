@@ -38,73 +38,96 @@
         </b-tooltip>
       </div>
     </div>
-    <ValidationObserver v-slot="{ invalid }">
-      <form @submit.prevent="">
-        <div style="margin-inline: 100px" class="mt-4">
-          <div class="columns is-vcentered">
-            <div class="column">
-              <p class="has-text-primary is-size-4">
-                Search tutors according to the courses you prefer and/or your
-                availability
-              </p>
-            </div>
-            <div class="column is-narrow">
-              <b-button
-                :disabled="invalid"
-                class="is-primary is-size-5 ml-5 continue-button-width"
-                @click="onSearchTutor"
-                >Search</b-button
-              >
-            </div>
-          </div>
-
-          <div class="mt-6">
-            <label class="is-size-5">Courses</label>
-            <div class="mt-2">
-              <div class="columns expertise-list">
-                <div
-                  v-for="expertiseItem in expertiseList"
-                  :key="expertiseItem.id"
-                  class="expertise-item-list"
+    <div style="margin-inline: 100px" class="mt-4">
+      <p class="has-text-primary is-size-4 mt-4">
+        Tutors you are connected with
+      </p>
+      <b-message
+        type="is-info"
+        has-icon
+        class="mt-4 is-size-5"
+        v-if="connectedTutors.length === 0"
+      >
+        Details of tutors you are connected with will appear here
+      </b-message>
+      <div class="mt-4" v-if="connectedTutors.length !== 0">
+        <AppTable
+          :data="connectedTutors"
+          :columns="connectedTutorHeader"
+          row-class-one="striped-table-color-2"
+          rowClassTwo="striped-table-color"
+        />
+      </div>
+    </div>
+    <div>
+      <ValidationObserver v-slot="{ invalid }">
+        <form @submit.prevent="">
+          <div style="margin-inline: 100px" class="mt-4">
+            <div class="columns is-vcentered">
+              <div class="column">
+                <p class="has-text-primary is-size-4">
+                  Search tutors according to the courses you prefer and/or your
+                  availability
+                </p>
+              </div>
+              <div class="column is-narrow">
+                <b-button
+                  :disabled="invalid"
+                  class="is-primary is-size-5 ml-5 continue-button-width"
+                  @click="onSearchTutor"
+                  >Search</b-button
                 >
-                  <b-checkbox v-model="courses" :native-value="expertiseItem">
-                    {{ expertiseItem.name }}
-                  </b-checkbox>
+              </div>
+            </div>
+
+            <div class="mt-6">
+              <label class="is-size-5">Courses</label>
+              <div class="mt-2">
+                <div class="columns expertise-list">
+                  <div
+                    v-for="expertiseItem in expertiseList"
+                    :key="expertiseItem.id"
+                    class="expertise-item-list"
+                  >
+                    <b-checkbox v-model="courses" :native-value="expertiseItem">
+                      {{ expertiseItem.name }}
+                    </b-checkbox>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="mt-4">
-            <label>Availability</label>
-            <div class="mt-2">
-              <AvailableDayAndTime
-                @getDetails="
-                  (value) => {
-                    availabilityDetail(value);
-                  }
-                "
+            <div class="mt-5">
+              <label>Availability</label>
+              <div class="mt-2">
+                <AvailableDayAndTime
+                  @getDetails="
+                    (value) => {
+                      availabilityDetail(value);
+                    }
+                  "
+                />
+              </div>
+            </div>
+            <div
+              class="mt-4 mx-4"
+              v-if="tutorData.length === 0 && isSearchClicked"
+            >
+              <b-message type="is-danger" has-icon class="mt-4 is-size-5">
+                There aren't any tutors available for the filters you applied.
+                Please modify filters and try again
+              </b-message>
+            </div>
+            <div class="mt-4 mx-4" v-if="tutorData.length !== 0">
+              <AppTable
+                :data="tutorData"
+                :columns="tutorHeader"
+                row-class-one="striped-table-color-2"
+                rowClassTwo="striped-table-color"
               />
             </div>
-          </div>
-          <div
-            class="mt-4 mx-4"
-            v-if="tutorData.length === 0 && isSearchClicked"
-          >
-            <b-message type="is-danger" has-icon class="mt-4 is-size-5">
-              There aren't any tutors available for the filters you applied.
-              Please modify filters and try again
-            </b-message>
-          </div>
-          <div class="mt-4 mx-4" v-if="tutorData.length !== 0">
-            <AppTable
-              :data="tutorData"
-              :columns="tutorHeader"
-              row-class-one="striped-table-color-2"
-              rowClassTwo="striped-table-color"
-            />
-          </div>
-        </div></form
-    ></ValidationObserver>
+          </div></form
+      ></ValidationObserver>
+    </div>
     <AppLoader :isLoading="isLoading" />
   </div>
 </template>
@@ -155,14 +178,33 @@ export default {
       },
     ];
 
+    const connectedTutorHeader = [
+      {
+        field: "id",
+        label: "ID",
+        tableHeaderAttributes: this.paymentHeadShow,
+        tableDataAttributes: this.columnTdAttrs,
+        sortable: true,
+      },
+      {
+        field: "button",
+        label: "Action",
+        tableHeaderAttributes: this.paymentHeadShow,
+        tableDataAttributes: this.columnTdAttrs,
+        sortable: false,
+      },
+    ];
+
     return {
       expertiseList: [],
       courses: [],
       tutorHeader,
+      connectedTutorHeader,
       tutorData: [],
       availability: [],
       isLoading: false,
       isSearchClicked: false,
+      connectedTutors: [],
     };
   },
   methods: {
@@ -303,12 +345,43 @@ export default {
         }
       });
     },
+    fetchConnectedTutors() {
+      this.isLoading = true;
+      apiRequestManager("get", "/student/connected-tutors", {}, {}, (res) => {
+        this.isLoading = false;
+        if (res.status === 200) {
+          this.connectedTutors = res.data.connectedTutors.map(
+            (connectedTutor) => {
+              return {
+                id: connectedTutor,
+                button: [
+                  {
+                    text: "View",
+                    onClick: () => {
+                      this.$router
+                        .push(`/student/tutor-details/${connectedTutor}`)
+                        .catch(() => []);
+                    },
+                    icon: "",
+                    type: "is-primary",
+                  },
+                ],
+              };
+            }
+          );
+          return;
+        }
+      });
+    },
   },
   mounted() {
     this.fetchCourses();
+    this.fetchConnectedTutors();
   },
   watch: {
-    $route: "fetchCourses",
+    $route: {
+      handler: ["fetchCourses", "fetchConnectedTutors"],
+    },
   },
 };
 </script>
