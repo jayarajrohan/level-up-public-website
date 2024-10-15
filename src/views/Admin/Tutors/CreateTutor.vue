@@ -42,6 +42,7 @@
                       type="password"
                       v-model="password"
                       placeholder="Enter password"
+                      password-reveal
                     />
                     <span class="has-text-danger error-massage">{{
                       errors[0]
@@ -65,6 +66,7 @@
                       type="password"
                       v-model="confirmPassword"
                       placeholder="Confirm password"
+                      password-reveal
                     />
                     <span class="has-text-danger error-massage">{{
                       errors[0]
