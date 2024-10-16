@@ -111,7 +111,7 @@
                 </div>
               </div>
             </div>
-            <div class="mt-4">
+            <div class="mt-4" v-if="$root.isShowCountAndRecentDate">
               <div class="columns">
                 <div class="column mr-4">
                   <label>Recently viewed date</label>

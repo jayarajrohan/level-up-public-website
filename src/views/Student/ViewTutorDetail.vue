@@ -145,7 +145,7 @@
             />
           </div>
         </div>
-        <div class="mt-6">
+        <div class="mt-6" v-if="contactDetails !== undefined">
           <div class="columns">
             <div class="column mr-6" v-if="mobileNumber || whatsAppNumber">
               <p class="font-size-one font-color-one">Contact Details</p>
@@ -265,6 +265,7 @@ export default {
       username: "",
       name: "",
       email: "",
+      contactDetails: undefined,
       expertiseList: "",
       mobileNumber: "",
       whatsAppNumber: "",
@@ -293,6 +294,7 @@ export default {
             this.name = tutor.name || "";
             this.email = tutor.email || "";
             this.expertiseList = tutor.expertise || [];
+            this.contactDetails = tutor.contactDetails || undefined;
             this.mobileNumber = tutor.contactDetails?.mobileNumber || "";
             this.whatsAppNumber = tutor.contactDetails?.whatsAppNumber || "";
             this.facebook = tutor.contactDetails?.socialMedia?.facebook || "";

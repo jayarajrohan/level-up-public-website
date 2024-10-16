@@ -42,6 +42,26 @@ div
           </div>
         </div>
         <div style="margin-inline: 100px" class="mt-4">
+          <p class="has-text-primary is-size-4 mt-4">Connection Requests</p>
+          <b-message
+            type="is-info"
+            has-icon
+            class="mt-4 is-size-5"
+            v-if="connectionRequests.length === 0"
+          >
+            Details of Students who sent you connection requests will appear
+            here
+          </b-message>
+          <div class="mt-4" v-if="connectionRequests.length !== 0">
+            <AppTable
+              :data="connectionRequests"
+              :columns="connectionRequestHeader"
+              row-class-one="striped-table-color-2"
+              rowClassTwo="striped-table-color"
+            />
+          </div>
+        </div>
+        <div style="margin-inline: 100px" class="mt-4">
           <p class="has-text-primary is-size-4 mt-4">
             Students who viewed your profile
           </p>
@@ -103,9 +123,28 @@ export default {
       },
     ];
 
+    const connectionRequestHeader = [
+      {
+        field: "id",
+        label: "ID",
+        sortable: true,
+      },
+      {
+        field: "requestDate",
+        label: "Request Date",
+        sortable: false,
+      },
+      {
+        field: "button",
+        label: "Button",
+      },
+    ];
+
     return {
       viewersData: [],
+      connectionRequests: [],
       viewersHeader,
+      connectionRequestHeader,
       isModalActive: false,
       isLoading: false,
     };
@@ -122,6 +161,23 @@ export default {
         }
       });
     },
+    handleRequest(action, id) {
+      this.isLoading = true;
+      apiRequestManager(
+        "post",
+        `/tutor/request/${id}`,
+        { status: action },
+        {},
+        (res) => {
+          this.isLoading = false;
+          if (res.status === 200) {
+            showSuccessToast(`Request ${action} successfully`);
+            this.fetchConnectionRequests();
+            return;
+          }
+        }
+      );
+    },
     fetchViewedStudentDetails() {
       this.isLoading = true;
       apiRequestManager("get", "/tutor/view-students", {}, {}, (res) => {
@@ -136,6 +192,7 @@ export default {
                 {
                   text: "View",
                   onClick: () => {
+                    this.$root.isShowCountAndRecentDate = true;
                     this.$root.count = student.count;
                     this.$root.recentDate = moment(student.recentDate).format(
                       "YYYY-MM-DD"
@@ -154,12 +211,61 @@ export default {
         }
       });
     },
+    fetchConnectionRequests() {
+      this.isLoading = true;
+      apiRequestManager("get", "/tutor/connection-requests", {}, {}, (res) => {
+        this.isLoading = false;
+        if (res.status === 200) {
+          this.connectionRequests = res.data.requests.map((request) => {
+            return {
+              id: request.id,
+              requestDate: moment(request.requestDate).format(
+                "YYYY-MM-DD hh:mm:ss"
+              ),
+              button: [
+                {
+                  text: "View",
+                  onClick: () => {
+                    this.$root.isShowCountAndRecentDate = false;
+                    this.$router
+                      .push(`/tutor/student-detail/${request.id}`)
+                      .catch(() => []);
+                  },
+                  icon: "",
+                  type: "is-primary",
+                },
+                {
+                  text: "Accept",
+                  onClick: () => {
+                    this.handleRequest("accepted", request.id);
+                  },
+                  icon: "",
+                  type: "is-primary",
+                },
+                {
+                  text: "Reject",
+                  onClick: () => {
+                    this.handleRequest("rejected", request.id);
+                  },
+                  icon: "",
+                  type: "is-danger",
+                },
+              ],
+            };
+          });
+          return;
+        }
+      });
+    },
   },
   mounted() {
     this.fetchViewedStudentDetails();
+    this.fetchConnectionRequests();
   },
   watch: {
-    $route: "fetchViewedStudentDetails",
+    $route: {
+      handler: ["fetchViewedStudentDetails", "fetchConnectionRequests"],
+    },
   },
 };
 </script>

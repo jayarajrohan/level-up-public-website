@@ -243,6 +243,7 @@
                         type="password"
                         v-model="currentPassword"
                         placeholder="Enter password"
+                        password-reveal
                       />
                       <span class="has-text-danger error-massage">{{
                         errors[0]
@@ -267,6 +268,7 @@
                         type="password"
                         v-model="newPassword"
                         placeholder="Enter password"
+                        password-reveal
                       />
                       <span class="has-text-danger error-massage">{{
                         errors[0]
@@ -290,6 +292,7 @@
                         type="password"
                         v-model="confirmNewPassword"
                         placeholder="Confirm password"
+                        password-reveal
                       />
                       <span class="has-text-danger error-massage">{{
                         errors[0]

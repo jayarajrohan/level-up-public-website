@@ -39,6 +39,7 @@ new Vue({
   data: {
     count: 0,
     recentDate: "",
+    isShowCountAndRecentDate: false,
   },
   render: (h) => h(App),
 }).$mount("#app");
