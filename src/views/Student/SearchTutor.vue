@@ -149,6 +149,13 @@ export default {
         sortable: true,
       },
       {
+        field: "username",
+        label: "Username",
+        tableHeaderAttributes: this.paymentHeadShow,
+        tableDataAttributes: this.columnTdAttrs,
+        sortable: true,
+      },
+      {
         field: "button",
         label: "Action",
         tableHeaderAttributes: this.paymentHeadShow,
@@ -315,13 +322,14 @@ export default {
           this.connectedTutors = res.data.connectedTutors.map(
             (connectedTutor) => {
               return {
-                id: connectedTutor,
+                id: connectedTutor.id,
+                username: connectedTutor.username,
                 button: [
                   {
                     text: "View",
                     onClick: () => {
                       this.$router
-                        .push(`/student/tutor-details/${connectedTutor}`)
+                        .push(`/student/tutor-details/${connectedTutor.id}`)
                         .catch(() => []);
                     },
                     icon: "",

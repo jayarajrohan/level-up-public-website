@@ -80,7 +80,7 @@ export default {
     AppLoader,
   },
   created() {
-    this.socket = io("https://level-up-pmy6.onrender.com");
+    this.socket = io("http://localhost:8081");
     this.socket.on("receiveMessage", this.handleIncomingMessage);
     this.socket.on("loadOldMessages", this.handleOldMessages);
   },
@@ -95,9 +95,19 @@ export default {
         message: this.message,
       });
     },
-    handleIncomingMessage({ roomId, senderUsername, message }) {
+    handleIncomingMessage({
+      roomId,
+      messageId,
+      senderUsername,
+      createdAt,
+      message,
+    }) {
+      console.log(roomId, messageId, senderUsername, createdAt, message);
       if (senderUsername === this.tutorUsername) {
         this.message = "";
+      } else {
+        const audio = new Audio(require("@/assets/audio/chat.mp3"));
+        audio.play();
       }
 
       const isFound = this.messageFromAllRooms.find(
