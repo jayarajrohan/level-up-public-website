@@ -1,37 +1,6 @@
 div
 <template>
   <div>
-    <div class="columns top-bar py-1 px-2">
-      <div class="column">
-        <div
-          class="logo hover-style"
-          @click="
-            () => {
-              $router.push(`/tutor/students-viewed`).catch(() => []);
-            }
-          "
-        >
-          Level-Up
-        </div>
-      </div>
-
-      <div class="column is-narrow">
-        <b-tooltip label="Log Out" position="is-left">
-          <img
-            src="@/assets/images/logoutButton.webp"
-            alt="Log Out"
-            class="hover-style"
-            width="50px"
-            @click="
-              () => {
-                $router.push(`/`).catch(() => []);
-              }
-            "
-          />
-        </b-tooltip>
-      </div>
-    </div>
-
     <div style="margin-inline: 100px" class="mt-4">
       <div class="columns is-vcentered">
         <div class="column">

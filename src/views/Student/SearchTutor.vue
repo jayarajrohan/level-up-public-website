@@ -1,43 +1,5 @@
 <template>
   <div>
-    <div class="columns top-bar py-1 px-2">
-      <div class="column">
-        <div
-          class="logo hover-style"
-          @click="
-            () => {
-              $router.push(`/student/search-tutor`).catch(() => []);
-            }
-          "
-        >
-          Level-Up
-        </div>
-      </div>
-      <div class="column is-narrow">
-        <img
-          src="@/assets/images/Profile.webp"
-          alt="profile"
-          class="hover-style mt-2 border-style"
-          width="44px"
-          @click="
-            () => {
-              $router.push(`/student/profile`).catch(() => []);
-            }
-          "
-        />
-      </div>
-      <div class="column is-narrow">
-        <b-tooltip label="Log Out" position="is-left">
-          <img
-            src="@/assets/images/logoutButton.webp"
-            alt="Log Out"
-            class="hover-style"
-            width="50px"
-            @click="onLogout"
-          />
-        </b-tooltip>
-      </div>
-    </div>
     <div style="margin-inline: 100px" class="mt-4">
       <p class="has-text-primary is-size-4 mt-4">
         Tutors you are connected with
