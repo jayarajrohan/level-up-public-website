@@ -126,6 +126,7 @@ export default {
       });
     },
     handleOldMessages(messages) {
+      this.messageFromAllRooms = [];
       messages.forEach((message) => {
         const isFound = this.messageFromAllRooms.find(
           (ar) => ar.roomId === message.roomId
