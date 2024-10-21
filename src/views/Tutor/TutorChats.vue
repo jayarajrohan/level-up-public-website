@@ -16,7 +16,7 @@
         </div>
       </div>
       <div class="column">
-        <div class="message-area">
+        <div class="message-area" ref="messageContainer">
           <div
             v-for="(messageItem, index) in messages"
             :key="index"
@@ -44,7 +44,7 @@
               expanded
               v-model="message"
               rounded
-              @keydown.enter="sendMessage"
+              @keydown.native="onMessageEnter"
             />
           </div>
           <div class="column is-narrow mx-2 mb-2">
@@ -98,7 +98,6 @@ export default {
       this.message = "";
     },
     handleIncomingMessage({ roomId, senderUsername, message }) {
-      console.log("new");
       const isFound = this.messageFromAllRooms.find(
         (room) => room.roomId === roomId
       );
@@ -106,6 +105,10 @@ export default {
       if (isFound) {
         isFound.messages.push({ senderUsername, message });
         this.messages = isFound.messages;
+        this.$nextTick(() => {
+          const container = this.$refs.messageContainer;
+          container.scrollTop = container.scrollHeight;
+        });
         return;
       }
 
@@ -115,6 +118,10 @@ export default {
       });
 
       this.messages = [{ senderUsername, message }];
+      this.$nextTick(() => {
+        const container = this.$refs.messageContainer;
+        container.scrollTop = container.scrollHeight;
+      });
     },
     handleOldMessages(messages) {
       messages.forEach((message) => {
@@ -138,6 +145,10 @@ export default {
             ],
           });
         }
+      });
+      this.$nextTick(() => {
+        const container = this.$refs.messageContainer;
+        container.scrollTop = container.scrollHeight;
       });
     },
     fetchAcceptedRequests() {
@@ -163,6 +174,15 @@ export default {
       this.messages =
         this.messageFromAllRooms.find((rooms) => rooms.roomId === roomId)
           ?.messages || [];
+      this.$nextTick(() => {
+        const container = this.$refs.messageContainer;
+        container.scrollTop = container.scrollHeight;
+      });
+    },
+    onMessageEnter(e) {
+      if (e.key === "Enter") {
+        this.sendMessage();
+      }
     },
   },
   mounted() {
@@ -179,7 +199,7 @@ export default {
 .message-area {
   height: calc(100vh - 115px);
   padding: 20px !important;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 .chat-wrapper {
   padding: 10px 0 !important;
