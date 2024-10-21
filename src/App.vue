@@ -126,14 +126,10 @@ export default {
   background-color: #006fb7;
   width: 200px;
   font-size: 25px;
-  padding-block: 5px;
-  margin-top: 7px;
-  text-align: end;
+  text-align: center;
   border-radius: 15px 0;
   color: #fff;
-  color: var(--white, #fff);
   font-weight: 500;
-  line-height: normal;
-  letter-spacing: 0.18px;
+  padding: 10px 0;
 }
 </style>
