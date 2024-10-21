@@ -124,27 +124,17 @@ export default {
       });
     },
     handleOldMessages(messages) {
+      this.messageFromAllRooms = [];
       messages.forEach((message) => {
-        const isFound = this.messageFromAllRooms.find(
-          (ar) => ar.roomId === message.roomId
-        );
-
-        if (isFound) {
-          isFound.messages.push({
-            senderUsername: message.senderUsername,
-            message: message.message,
-          });
-        } else {
-          this.messageFromAllRooms.push({
-            roomId: message.roomId,
-            messages: [
-              {
-                senderUsername: message.senderUsername,
-                message: message.message,
-              },
-            ],
-          });
-        }
+        this.messageFromAllRooms.push({
+          roomId: message.roomId,
+          messages: [
+            {
+              senderUsername: message.senderUsername,
+              message: message.message,
+            },
+          ],
+        });
       });
       this.$nextTick(() => {
         const container = this.$refs.messageContainer;
