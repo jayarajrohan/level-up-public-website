@@ -4,10 +4,10 @@
       <div class="column is-one-quarter chat-wrapper">
         <div
           v-for="room in rooms"
-          :key="room.roomId"
+          :key="room.studentUsername"
           @click="
             () => {
-              onRoomSelect(room.roomId);
+              onStudentSelect(room.studentUsername);
             }
           "
           class="hover-style chat"
@@ -21,14 +21,14 @@
             v-for="(messageItem, index) in messages"
             :key="index"
             :class="
-              messageItem.senderUsername === tutorUsername
+              messageItem.senderUsername === username
                 ? `current-user`
                 : `not-current-user`
             "
           >
             <div
               :class="`message-item ${
-                messageItem.senderUsername === tutorUsername
+                messageItem.senderUsername === username
                   ? `current-user-message-item`
                   : `not-current-user-message-item`
               }`"
@@ -70,10 +70,10 @@ export default {
       isLoading: false,
       messageFromAllRooms: [],
       messages: [],
-      selectedRoomId: "",
+      selectedStudentUsername: "",
       rooms: [],
       message: "",
-      tutorUsername: "",
+      username: "",
     };
   },
   components: {
@@ -85,25 +85,31 @@ export default {
     this.socket.on("loadOldMessages", this.handleOldMessages);
   },
   methods: {
-    joinRoom(studentUsername, tutorUsername) {
-      this.socket.emit("joinRoom", { studentUsername, tutorUsername });
+    joinRoom(username) {
+      this.socket.emit("joinRoom", username);
     },
     sendMessage() {
       this.socket.emit("sendMessage", {
-        roomId: this.selectedRoomId,
-        senderUsername: this.tutorUsername,
+        senderUsername: this.username,
+        receiverUsername: this.selectedStudentUsername,
         message: this.message,
       });
     },
     handleIncomingMessage({
-      roomId,
-      messageId,
       senderUsername,
+      receiverUsername,
+      messageId,
       createdAt,
       message,
     }) {
-      console.log(roomId, messageId, senderUsername, createdAt, message);
-      if (senderUsername === this.tutorUsername) {
+      console.log(
+        senderUsername,
+        receiverUsername,
+        messageId,
+        createdAt,
+        message
+      );
+      if (senderUsername === this.username) {
         this.message = "";
       } else {
         const audio = new Audio(require("@/assets/audio/chat.mp3"));
@@ -111,7 +117,9 @@ export default {
       }
 
       const isFound = this.messageFromAllRooms.find(
-        (room) => room.roomId === roomId
+        (room) =>
+          room.studentUsername === receiverUsername ||
+          room.studentUsername === senderUsername
       );
 
       if (isFound) {
@@ -125,7 +133,10 @@ export default {
       }
 
       this.messageFromAllRooms.push({
-        roomId,
+        studentUsername:
+          this.username === receiverUsername
+            ? senderUsername
+            : receiverUsername,
         messages: [{ senderUsername, message }],
       });
 
@@ -137,9 +148,12 @@ export default {
     },
     handleOldMessages(messages) {
       this.messageFromAllRooms = [];
+      console.log(messages);
       messages.forEach((message) => {
         const isFound = this.messageFromAllRooms.find(
-          (ar) => ar.roomId === message.roomId
+          (ar) =>
+            ar.studentUsername === message.senderUsername ||
+            ar.studentUsername === message.receiverUsername
         );
 
         if (isFound) {
@@ -149,7 +163,10 @@ export default {
           });
         } else {
           this.messageFromAllRooms.push({
-            roomId: message.roomId,
+            studentUsername:
+              message.senderUsername === this.username
+                ? message.receiverUsername
+                : message.senderUsername,
             messages: [
               {
                 senderUsername: message.senderUsername,
@@ -174,19 +191,19 @@ export default {
           res.data.requests.forEach((request) => {
             this.rooms.push({
               studentName: request.username,
-              roomId: `${request.username}_${this.tutorUsername}`,
+              studentUsername: request.username,
             });
-            comp.joinRoom(request.username, this.tutorUsername);
           });
           return;
         }
       });
     },
-    onRoomSelect(roomId) {
-      this.selectedRoomId = roomId;
+    onStudentSelect(studentUsername) {
+      this.selectedStudentUsername = studentUsername;
       this.messages =
-        this.messageFromAllRooms.find((rooms) => rooms.roomId === roomId)
-          ?.messages || [];
+        this.messageFromAllRooms.find(
+          (rooms) => rooms.studentUsername === studentUsername
+        )?.messages || [];
       this.$nextTick(() => {
         const container = this.$refs.messageContainer;
         container.scrollTop = container.scrollHeight;
@@ -199,7 +216,8 @@ export default {
     },
   },
   mounted() {
-    this.tutorUsername = localStorage.getItem("username");
+    this.username = localStorage.getItem("username");
+    this.joinRoom(this.username);
     this.fetchAcceptedRequests();
   },
   watch: {
