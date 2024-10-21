@@ -94,10 +94,12 @@ export default {
         senderUsername: this.tutorUsername,
         message: this.message,
       });
-
-      this.message = "";
     },
     handleIncomingMessage({ roomId, senderUsername, message }) {
+      if (senderUsername === this.tutorUsername) {
+        this.message = "";
+      }
+
       const isFound = this.messageFromAllRooms.find(
         (room) => room.roomId === roomId
       );
