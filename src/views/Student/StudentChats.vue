@@ -94,10 +94,12 @@ export default {
         senderUsername: this.studentUsername,
         message: this.message,
       });
-
-      this.message = "";
     },
     handleIncomingMessage({ roomId, senderUsername, message }) {
+      if (senderUsername === this.studentUsername) {
+        this.message = "";
+      }
+
       const isFound = this.messageFromAllRooms.find(
         (room) => room.roomId === roomId
       );
@@ -126,15 +128,26 @@ export default {
     handleOldMessages(messages) {
       this.messageFromAllRooms = [];
       messages.forEach((message) => {
-        this.messageFromAllRooms.push({
-          roomId: message.roomId,
-          messages: [
-            {
-              senderUsername: message.senderUsername,
-              message: message.message,
-            },
-          ],
-        });
+        const isFound = this.messageFromAllRooms.find(
+          (ar) => ar.roomId === message.roomId
+        );
+
+        if (isFound) {
+          isFound.messages.push({
+            senderUsername: message.senderUsername,
+            message: message.message,
+          });
+        } else {
+          this.messageFromAllRooms.push({
+            roomId: message.roomId,
+            messages: [
+              {
+                senderUsername: message.senderUsername,
+                message: message.message,
+              },
+            ],
+          });
+        }
       });
       this.$nextTick(() => {
         const container = this.$refs.messageContainer;
