@@ -111,6 +111,11 @@ const routes = [
         component: () => import("@/views/Tutor/ViewersScreen.vue"),
       },
       {
+        name: "Tutor Chat",
+        path: "/tutor/chats",
+        component: () => import("@/views/Tutor/TutorChats.vue"),
+      },
+      {
         name: "Tutor Profile",
         path: "/tutor/profile",
         component: () => import("@/views/Tutor/ProfileDetail.vue"),
@@ -131,6 +136,11 @@ const routes = [
         name: "Student Profile",
         path: "/student/profile",
         component: () => import("@/views/Student/StudentProfile.vue"),
+      },
+      {
+        name: "Student Chat",
+        path: "/student/chats",
+        component: () => import("@/views/Student/StudentChats.vue"),
       },
       {
         name: "Search Tutor",

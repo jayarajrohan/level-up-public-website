@@ -179,6 +179,7 @@ export default {
             this.isLoading = false;
             if (res.status === 200) {
               showSuccessToast("Login success");
+              localStorage.setItem("username", res.data.tutor.username);
               localStorage.setItem("role", res.data.role);
               localStorage.setItem("token", res.data.token);
               this.$router.push(`/tutor/students-viewed`).catch(() => []);
@@ -212,6 +213,7 @@ export default {
             this.isLoading = false;
             if (res.status === 200) {
               showSuccessToast("Login success");
+              localStorage.setItem("username", res.data.student.username);
               localStorage.setItem("role", res.data.role);
               localStorage.setItem("token", res.data.token);
               this.$router.push(`/student/search-tutor`).catch(() => []);
