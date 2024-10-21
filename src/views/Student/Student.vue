@@ -15,6 +15,15 @@
       </div>
       <div class="column is-flex is-align-items-center is-narrow">
         <img
+          src="@/assets/images/chat.png"
+          alt="Chat"
+          class="hover-style mx-4"
+          width="30px"
+          @click="onChat"
+        />
+      </div>
+      <div class="column is-flex is-align-items-center is-narrow">
+        <img
           src="@/assets/images/logoutButton.webp"
           alt="Log Out"
           class="hover-style"
@@ -36,6 +45,9 @@ export default {
     },
     onProfile() {
       this.$router.push(`/student/profile`).catch(() => []);
+    },
+    onChat() {
+      this.$router.push(`/student/chats`).catch(() => []);
     },
     onLogout() {
       this.$router.push("/").catch(() => []);
