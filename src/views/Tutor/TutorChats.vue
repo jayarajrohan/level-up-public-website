@@ -80,7 +80,7 @@ export default {
     AppLoader,
   },
   created() {
-    this.socket = io("http://localhost:8081");
+    this.socket = io("https://level-up-pmy6.onrender.com");
     this.socket.on("receiveMessage", this.handleIncomingMessage);
     this.socket.on("loadOldMessages", this.handleOldMessages);
   },
