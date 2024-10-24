@@ -4,10 +4,10 @@
       <div class="column is-one-quarter chat-wrapper">
         <div
           v-for="room in rooms"
-          :key="room.roomId"
+          :key="room.tutorUsername"
           @click="
             () => {
-              onRoomSelect(room.roomId);
+              onTutorSelect(room.tutorUsername);
             }
           "
           class="hover-style chat"
@@ -21,14 +21,14 @@
             v-for="(messageItem, index) in messages"
             :key="index"
             :class="
-              messageItem.senderUsername === studentUsername
+              messageItem.senderUsername === username
                 ? `current-user`
                 : `not-current-user`
             "
           >
             <div
               :class="`message-item ${
-                messageItem.senderUsername === studentUsername
+                messageItem.senderUsername === username
                   ? `current-user-message-item`
                   : `not-current-user-message-item`
               }`"
@@ -70,38 +70,56 @@ export default {
       isLoading: false,
       messageFromAllRooms: [],
       messages: [],
-      selectedRoomId: "",
+      selectedTutorUsername: "",
       rooms: [],
       message: "",
-      studentUsername: "",
+      username: "",
     };
   },
   components: {
     AppLoader,
   },
   created() {
-    this.socket = io("https://level-up-pmy6.onrender.com");
+    this.socket = io("http://localhost:8081");
     this.socket.on("receiveMessage", this.handleIncomingMessage);
     this.socket.on("loadOldMessages", this.handleOldMessages);
   },
   methods: {
-    joinRoom(studentUsername, tutorUsername) {
-      this.socket.emit("joinRoom", { studentUsername, tutorUsername });
+    joinRoom(username) {
+      this.socket.emit("joinRoom", username);
     },
     sendMessage() {
       this.socket.emit("sendMessage", {
-        roomId: this.selectedRoomId,
-        senderUsername: this.studentUsername,
+        senderUsername: this.username,
+        receiverUsername: this.selectedTutorUsername,
         message: this.message,
       });
     },
-    handleIncomingMessage({ roomId, senderUsername, message }) {
-      if (senderUsername === this.studentUsername) {
+    handleIncomingMessage({
+      senderUsername,
+      receiverUsername,
+      messageId,
+      createdAt,
+      message,
+    }) {
+      console.log(
+        senderUsername,
+        receiverUsername,
+        messageId,
+        createdAt,
+        message
+      );
+      if (senderUsername === this.username) {
         this.message = "";
+      } else {
+        const audio = new Audio(require("@/assets/audio/chat.mp3"));
+        audio.play();
       }
 
       const isFound = this.messageFromAllRooms.find(
-        (room) => room.roomId === roomId
+        (room) =>
+          room.tutorUsername === receiverUsername ||
+          room.tutorUsername === senderUsername
       );
 
       if (isFound) {
@@ -115,7 +133,10 @@ export default {
       }
 
       this.messageFromAllRooms.push({
-        roomId,
+        tutorUsername:
+          this.username === receiverUsername
+            ? senderUsername
+            : receiverUsername,
         messages: [{ senderUsername, message }],
       });
 
@@ -129,7 +150,9 @@ export default {
       this.messageFromAllRooms = [];
       messages.forEach((message) => {
         const isFound = this.messageFromAllRooms.find(
-          (ar) => ar.roomId === message.roomId
+          (ar) =>
+            ar.tutorUsername === message.senderUsername ||
+            ar.tutorUsername === message.receiverUsername
         );
 
         if (isFound) {
@@ -139,7 +162,10 @@ export default {
           });
         } else {
           this.messageFromAllRooms.push({
-            roomId: message.roomId,
+            tutorUsername:
+              message.senderUsername === this.username
+                ? message.receiverUsername
+                : message.senderUsername,
             messages: [
               {
                 senderUsername: message.senderUsername,
@@ -164,19 +190,19 @@ export default {
           res.data.connectedTutors.forEach((connectedTutor) => {
             this.rooms.push({
               tutorName: connectedTutor.username,
-              roomId: `${this.studentUsername}_${connectedTutor.username}`,
+              tutorUsername: connectedTutor.username,
             });
-            comp.joinRoom(this.studentUsername, connectedTutor.username);
           });
           return;
         }
       });
     },
-    onRoomSelect(roomId) {
-      this.selectedRoomId = roomId;
+    onTutorSelect(tutorUsername) {
+      this.selectedTutorUsername = tutorUsername;
       this.messages =
-        this.messageFromAllRooms.find((rooms) => rooms.roomId === roomId)
-          ?.messages || [];
+        this.messageFromAllRooms.find(
+          (rooms) => rooms.tutorUsername === tutorUsername
+        )?.messages || [];
       this.$nextTick(() => {
         const container = this.$refs.messageContainer;
         container.scrollTop = container.scrollHeight;
@@ -189,7 +215,8 @@ export default {
     },
   },
   mounted() {
-    this.studentUsername = localStorage.getItem("username");
+    this.username = localStorage.getItem("username");
+    this.joinRoom(this.username);
     this.fetchConnectedTutors();
   },
   watch: {
